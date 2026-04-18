@@ -1,0 +1,657 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 8.1.1">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/bxh_32x32.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/bxh_32x32.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/font-awesome.min.css">
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"shuaiwcm.github.io","root":"/","scheme":"Pisces","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":true,"scrollpercent":true},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},"path":"search.xml"};
+  </script>
+
+  <meta name="description" content="ubuntu相关设置设置合盖不休眠 编辑 logind 配置文件： 输入以下命令来编辑 logind.conf 文件：">
+<meta property="og:type" content="article">
+<meta property="og:title" content="linux设置">
+<meta property="og:url" content="https://shuaiwcm.github.io/linux%E8%AE%BE%E7%BD%AE.html">
+<meta property="og:site_name" content="LuRen&#39; Blog">
+<meta property="og:description" content="ubuntu相关设置设置合盖不休眠 编辑 logind 配置文件： 输入以下命令来编辑 logind.conf 文件：">
+<meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2025-01-25T05:10:36.000Z">
+<meta property="article:modified_time" content="2025-03-27T00:42:50.756Z">
+<meta property="article:author" content="LuRen">
+<meta property="article:tag" content="linux">
+<meta name="twitter:card" content="summary">
+
+<link rel="canonical" href="https://shuaiwcm.github.io/linux%E8%AE%BE%E7%BD%AE.html">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'zh-CN'
+  };
+</script>
+
+  <title>linux设置 | LuRen' Blog</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <h1 class="site-title">LuRen' Blog</h1>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+        <i class="fa fa-search fa-fw fa-lg"></i>
+    </div>
+  </div>
+</div>
+
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-fw fa-home"></i>首页</a>
+
+  </li>
+        <li class="menu-item menu-item-tags">
+
+    <a href="/tags/" rel="section"><i class="fa fa-fw fa-tags"></i>标签</a>
+
+  </li>
+        <li class="menu-item menu-item-categories">
+
+    <a href="/categories/" rel="section"><i class="fa fa-fw fa-th"></i>分类</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-fw fa-archive"></i>归档</a>
+
+  </li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>搜索
+        </a>
+      </li>
+  </ul>
+</nav>
+
+
+
+  <div class="search-pop-overlay">
+    <div class="popup search-popup">
+        <div class="search-header">
+  <span class="search-icon">
+    <i class="fa fa-search"></i>
+  </span>
+  <div class="search-input-container">
+    <input autocomplete="off" autocapitalize="off"
+           placeholder="搜索..." spellcheck="false"
+           type="search" class="search-input">
+  </div>
+  <span class="popup-btn-close">
+    <i class="fa fa-times-circle"></i>
+  </span>
+</div>
+<div id="search-result">
+  <div id="no-result">
+    <i class="fa fa-spinner fa-pulse fa-5x fa-fw"></i>
+  </div>
+</div>
+
+    </div>
+  </div>
+
+</div>
+    </header>
+
+    
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content post posts-expand">
+            
+
+    
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://shuaiwcm.github.io/linux%E8%AE%BE%E7%BD%AE.html">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/bxh.png">
+      <meta itemprop="name" content="LuRen">
+      <meta itemprop="description" content="生命在于折腾">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="LuRen' Blog">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          linux设置
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2025-01-25 13:10:36" itemprop="dateCreated datePublished" datetime="2025-01-25T13:10:36+08:00">2025-01-25</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-calendar-check-o"></i>
+                </span>
+                <span class="post-meta-item-text">更新于</span>
+                <time title="修改时间：2025-03-27 08:42:50" itemprop="dateModified" datetime="2025-03-27T08:42:50+08:00">2025-03-27</time>
+              </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/%E6%8A%80%E6%9C%AF%E5%88%86%E4%BA%AB/" itemprop="url" rel="index"><span itemprop="name">技术分享</span></a>
+                </span>
+            </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <h3 id="ubuntu相关设置"><a href="#ubuntu相关设置" class="headerlink" title="ubuntu相关设置"></a>ubuntu相关设置</h3><h4 id="设置合盖不休眠"><a href="#设置合盖不休眠" class="headerlink" title="设置合盖不休眠"></a>设置合盖不休眠</h4><ul>
+<li>编辑 logind 配置文件： 输入以下命令来编辑 logind.conf 文件：<span id="more"></span>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">sudo vim /etc/systemd/logind.conf</span><br></pre></td></tr></table></figure></li>
+<li>修改配置文件： 在文件中找到以下两行（如果没有的话，可以手动添加）：<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">HandleLidSwitch=ignore</span><br><span class="line">HandleLidSwitchDocked=ignore</span><br></pre></td></tr></table></figure></li>
+<li>重启 systemd： 修改后，你需要重启 systemd 服务以使改动生效。输入以下命令：<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">sudo systemctl restart systemd-logind</span><br></pre></td></tr></table></figure></li>
+</ul>
+<h4 id="查看电池状态"><a href="#查看电池状态" class="headerlink" title="查看电池状态"></a>查看电池状态</h4><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">upower -i /org/freedesktop/UPower/devices/battery_BAT0</span><br></pre></td></tr></table></figure>
+
+<h4 id="查看网络连接状态"><a href="#查看网络连接状态" class="headerlink" title="查看网络连接状态"></a>查看网络连接状态</h4><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">nmcli device status</span><br></pre></td></tr></table></figure>
+
+<h4 id="自动挂载硬盘"><a href="#自动挂载硬盘" class="headerlink" title="自动挂载硬盘"></a>自动挂载硬盘</h4><ul>
+<li>编辑<code>/etc/fstab</code>文件  <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">sudo nano /etc/fstab</span><br></pre></td></tr></table></figure></li>
+<li>在文件末尾添加一行，指定分区和挂载点。例如：  <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">/dev/sdb  /mnt/mydrive  ext4  defaults  0  2</span><br></pre></td></tr></table></figure></li>
+<li>重新加载 systemd 配置：  <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">sudo systemctl daemon-reload</span><br></pre></td></tr></table></figure></li>
+<li>测试挂载  <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">sudo mount -a</span><br></pre></td></tr></table></figure></li>
+</ul>
+<h4 id="设置smb共享"><a href="#设置smb共享" class="headerlink" title="设置smb共享"></a>设置smb共享</h4><ul>
+<li>首先切换到root用户</li>
+<li><code>apt install samba -y</code>安装samba</li>
+<li><code>mkdir -p Share</code>创建共享文件夹，并</li>
+<li><code> chmod 0777 Share</code>设置权限</li>
+<li>修改配置文件<code>/etc/samba/smb.conf</code>  <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line">  #在文件[global]中修改以下内容</span><br><span class="line">[global]</span><br><span class="line"> security = user                  #密码访问的选项</span><br><span class="line">#在文件最后增加以下内容</span><br><span class="line">[Ubuntu]                      #共享名称</span><br><span class="line">    comment = Samba                  #描述</span><br><span class="line">    path = /home/wang/Share        #共享路径</span><br><span class="line">    public = no                      #是否允许匿名访问</span><br><span class="line">    writable = yes                  #是否允许编辑、删除文件</span><br><span class="line">    available = yes                  #共享是否可用</span><br><span class="line">    browseable = yes              #共享是否可以在网络上浏览</span><br><span class="line">    valid users = wang            #用户名</span><br></pre></td></tr></table></figure></li>
+<li><code>smbpasswd -a wang</code>设置共享用户密码</li>
+<li><code>systemctl restart smbd.service</code> 重启smba</li>
+<li><code>systemctl enable smbd.service</code> 设置开机自启动</li>
+<li><code>systemctl status smbd.service</code> 查看smba状态</li>
+</ul>
+<h4 id="安装frps"><a href="#安装frps" class="headerlink" title="安装frps"></a>安装frps</h4><ul>
+<li><ul>
+<li>用wget下载fprs<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">wget https://github.com/fatedier/frp/releases/download/v0.5x.x/frp_0.5x.x_linux_amd64.tar.gz</span><br></pre></td></tr></table></figure></li>
+</ul>
+</li>
+<li><code>tar -zxvf frp_0.5x.x_linux_amd64.tar.gz</code>解压</li>
+<li><code>cd frp_0.5x.x_linux_amd64</code>进入文件目录</li>
+<li><code>vim frps.toml</code>修改配置文件</li>
+</ul>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">bindPort = 7000</span><br><span class="line">vhostHTTPPort = 6001</span><br><span class="line">auth.token = &quot;123123&quot;</span><br><span class="line">webServer.addr = &quot;0.0.0.0&quot;</span><br><span class="line">webServer.port = 7001</span><br><span class="line">webServer.user = &quot;admin&quot;</span><br><span class="line">webServer.password = &quot;admin&quot;</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>配置frps启动服务<ul>
+<li>在 <code>/etc/systemd/system</code> 目录下创建一个 <code>frps.service</code> 文件，用于配置 frps 服务。</li>
+<li><code>vim /etc/systemd/system/frps.service</code>写入内容</li>
+</ul>
+</li>
+</ul>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line">[Unit]</span><br><span class="line"># 服务名称，可自定义</span><br><span class="line">Description = frp server</span><br><span class="line">After = network.target syslog.target</span><br><span class="line">Wants = network.target</span><br><span class="line"></span><br><span class="line">[Service]</span><br><span class="line">Type = simple</span><br><span class="line"># 启动frps的命令，需修改为您的frps的安装路径</span><br><span class="line">ExecStart = /path/to/frps -c /path/to/frps.toml</span><br><span class="line"></span><br><span class="line">[Install]</span><br><span class="line">WantedBy = multi-user.target</span><br></pre></td></tr></table></figure>
+<ul>
+<li><code>sudo systemctl start frps</code>启动frps</li>
+<li><code>sudo systemctl stop frps</code>停止frps</li>
+<li><code>sudo systemctl restart frps</code>重启frps</li>
+<li><code>sudo systemctl status frps</code>查看frps状态</li>
+</ul>
+<h4 id="安装frpc"><a href="#安装frpc" class="headerlink" title="安装frpc"></a>安装frpc</h4><ul>
+<li>用wget下载fprc<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">wget https://github.com/fatedier/frp/releases/download/v0.5x.x/frp_0.5x.x_linux_amd64.tar.gz</span><br></pre></td></tr></table></figure></li>
+<li><code>tar -zxvf frp_0.5x.x_linux_amd64.tar.gz</code>解压</li>
+<li><code>cd frp_0.5x.x_linux_amd64</code>进入文件目录</li>
+<li><code>vim frpc.toml</code>修改配置文件</li>
+<li>添加以下内容</li>
+</ul>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br></pre></td><td class="code"><pre><span class="line">serverAddr = &quot;0.0.0.0&quot;     #服务端Ip</span><br><span class="line">serverPort = 7000          #服务端口</span><br><span class="line">auth.token = &quot;Shuaiwcm0-&quot;  #token</span><br><span class="line"></span><br><span class="line">[[proxies]]</span><br><span class="line">name = &quot;lede&quot;</span><br><span class="line">type = &quot;tcp&quot;</span><br><span class="line">localIP = &quot;192.168.50.1&quot;</span><br><span class="line">localPort = 22</span><br><span class="line">remotePort = 6000</span><br><span class="line"></span><br><span class="line">[[proxies]]</span><br><span class="line">name = &quot;e49l&quot;</span><br><span class="line">type = &quot;tcp&quot;</span><br><span class="line">localIP = &quot;192.168.50.7&quot;</span><br><span class="line">localPort = 22</span><br><span class="line">remotePort = 6003</span><br><span class="line"></span><br><span class="line">[[proxies]]</span><br><span class="line">name = &quot;desk&quot;</span><br><span class="line">type = &quot;tcp&quot;</span><br><span class="line">localIP = &quot;192.168.50.112&quot;</span><br><span class="line">localPort = 3389</span><br><span class="line">remotePort = 6002</span><br><span class="line"></span><br><span class="line">[[proxies]]</span><br><span class="line">name = &quot;web&quot;</span><br><span class="line">type = &quot;http&quot;</span><br><span class="line">localIP = &quot;192.168.50.1&quot;</span><br><span class="line">localPort = 80</span><br><span class="line">customDomains = [&quot;yz.34476234.xyz&quot;]</span><br></pre></td></tr></table></figure>
+<ul>
+<li>复制frpc至<code>/usr/local/bin/</code>以方便启动</li>
+<li><code> /usr/local/bin/frpc -c /home/wang/frp/frpc.toml</code>手动启动测试</li>
+<li>设置开机自启<ul>
+<li><code>nano /etc/systemd/system/frpc.service</code>创建服务文件</li>
+<li>添加如下内容</li>
+</ul>
+</li>
+</ul>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line">[Unit]</span><br><span class="line">Description=FRP Client</span><br><span class="line">After=network-online.target</span><br><span class="line">Wants=network-online.target</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">[Service]</span><br><span class="line">Type = simple</span><br><span class="line">ExecStart=/usr/local/bin/frpc -c /home/wang/frp/frpc.toml</span><br><span class="line">Restart=on-failure</span><br><span class="line"></span><br><span class="line">[Install]</span><br><span class="line">WantedBy=multi-user.target</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<ul>
+<li><code>systemctl daemon-reload</code>重新加载Systemd配置</li>
+<li><code>systemctl enable frpc.service</code>设置开机启动</li>
+<li><code>systemctl start frpc.service</code>启动服务</li>
+<li><code>systemctl status frpc.service</code>检查服务状态</li>
+</ul>
+<h4 id="安装docker"><a href="#安装docker" class="headerlink" title="安装docker"></a>安装docker</h4><ul>
+<li><p><strong>使用官方脚本一键安装（推荐）：</strong></p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">curl -fsSL https://get.docker.com | sh</span><br></pre></td></tr></table></figure></li>
+<li><p><strong>命令行安装</strong></p>
+<ul>
+<li>卸载旧版本（如有） <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">sudo apt remove docker docker-engine docker.io containerd runc</span><br></pre></td></tr></table></figure></li>
+<li>更新软件源 <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">sudo apt update</span><br></pre></td></tr></table></figure></li>
+<li>安装依赖工具 <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">sudo apt install apt-transport-https ca-certificates curl gnupg</span><br></pre></td></tr></table></figure></li>
+<li>添加 Docker 官方 GPG 密钥 <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">curl -fsSL https://download.docker.com/linux/ubuntu/gpg | sudo gpg --dearmor -o /etc/apt/keyrings/docker.gpg</span><br></pre></td></tr></table></figure></li>
+<li>添加 Docker 仓库  <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">echo  &quot;deb [arch=$(dpkg --print-architecture) signed-by=/etc/apt/keyrings/docker.gpg] https://download.docker.com/linux/ubuntu $(lsb_release -cs) stable&quot; | sudo tee /etc/apt/sources.list.d/docker.list &gt; /dev/null</span><br></pre></td></tr></table></figure></li>
+<li>安装 <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">Docker sudo apt update sudo apt install docker-ce docker-ce-cli containerd.io</span><br></pre></td></tr></table></figure></li>
+</ul>
+</li>
+<li><p><strong>允许普通用户运行 Docker</strong></p>
+<ul>
+<li>将用户加入  <code>docker</code>  用户组</li>
+</ul>
+ <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">sudo usermod -aG docker $USER</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>立即生效用户组变更</li>
+</ul>
+ <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">newgrp docker</span><br></pre></td></tr></table></figure>
+</li>
+<li><p><strong>3. 验证权限</strong></p>
+  <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">docker run hello-world</span><br></pre></td></tr></table></figure></li>
+</ul>
+<h4 id="安装immich"><a href="#安装immich" class="headerlink" title="安装immich"></a>安装immich</h4><ol>
+<li><strong>创建工作目录</strong><br>创建一个目录用于存放 Immich 的配置文件和数据：<br><code>mkdir ~/immich cd ~/immich</code></li>
+<li><strong>下载官方配置文件</strong><br>从 Immich 的 GitHub 仓库获取最新的 docker-compose.yml 和 .env 示例文件：<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">wget https://github.com/immich-app/immich/releases/latest/download/docker-compose.yml</span><br><span class="line">wget -O .env https://github.com/immich-app/immich/releases/latest/download/example.env</span><br></pre></td></tr></table></figure></li>
+<li><strong>编辑 .env 文件</strong><br><code>nano .env</code></li>
+</ol>
+<ul>
+<li><p><strong>需要修改的关键项：</strong></p>
+<ul>
+<li><strong>UPLOAD_LOCATION</strong>：设置照片和视频的存储路径，例如：    <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">UPLOAD_LOCATION=/home/user/immich/uploads</span><br><span class="line">mkdir -p /home/user/immich/uploads </span><br><span class="line">chmod -R 755 /home/user/immich/uploads</span><br></pre></td></tr></table></figure></li>
+<li><strong>DB_PASSWORD</strong>：设置数据库密码，例如：<br>  <code>DB_PASSWORD=your_secure_password</code></li>
+<li><strong>IMMICH_VERSION</strong>：默认是 release，表示最新稳定版。如果需要特定版本，可以指定，例如 v1.117.0。</li>
+</ul>
+</li>
+<li><p><strong>其他可选配置：</strong></p>
+<ul>
+<li>DB_DATA_LOCATION：数据库存储路径，默认是 .&#x2F;postgres，可以改为绝对路径。</li>
+<li>TZ：设置时区，例如 Asia&#x2F;Shanghai。</li>
+</ul>
+</li>
+<li><p><strong>保存并退出（Ctrl+O, Enter, Ctrl+X）。</strong></p>
+</li>
+</ul>
+<ol start="4">
+<li><strong>检查 docker-compose.yml</strong></li>
+</ol>
+<ul>
+<li>通常无需修改 docker-compose.yml，但可以确认以下内容：<ul>
+<li>服务包括 immich-server、immich-machine-learning、redis 和 database。</li>
+<li>端口映射默认是 2283:2283，如果需要更改外部端口（例如改为 8080），修改：<br>  <code>ports:  -  &quot;8080:2283&quot;</code></li>
+</ul>
+</li>
+</ul>
+<ol start="5">
+<li><strong>启动 Immich</strong></li>
+</ol>
+<ul>
+<li>拉取镜像并启动所有服务：  <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">docker compose pull </span><br><span class="line">docker compose up -d</span><br></pre></td></tr></table></figure></li>
+</ul>
+<ol start="6">
+<li><strong>验证安装</strong></li>
+</ol>
+<ul>
+<li>检查容器状态：<br><code>docker compose ps</code><br>  确保所有服务（immich-server, immich-machine-learning, redis, database）状态为 Up。</li>
+<li>查看日志确认无错误：<br><code>docker compose logs</code></li>
+</ul>
+<ol start="7">
+<li><strong>访问 Immich</strong></li>
+</ol>
+<ul>
+<li>在浏览器中打开：http:&#x2F;&#x2F;你的服务器IP:2283（如果改了端口，用新端口）。</li>
+<li>默认会进入注册页面，创建管理员账户。</li>
+</ul>
+<h4 id="更新Immich"><a href="#更新Immich" class="headerlink" title="更新Immich"></a>更新Immich</h4><ol>
+<li><strong>备份数据</strong></li>
+</ol>
+<ul>
+<li>在升级之前，强烈建议备份你的数据，以防万一出现问题。Immich 的数据主要包括：<ul>
+<li><strong>媒体文件</strong>：存储在 UPLOAD_LOCATION 指定的目录（通常在 .env 文件中定义）。</li>
+<li><strong>数据库</strong>：存储在 DB_DATA_LOCATION 指定的目录（通常是一个 Docker 卷或本地路径）。</li>
+</ul>
+</li>
+<li>你可以手动复制这些目录到安全位置，或者使用以下命令备份 Docker 卷（如果使用卷存储）：  <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">docker volume ls # 查看所有卷，找到与 Immich 相关的卷  </span><br><span class="line">docker run --rm -v immich_postgres:/data -v ./backup:/backup busybox sh -c &quot;cp -a /data/. /backup/&quot;</span><br></pre></td></tr></table></figure>
+<blockquote>
+<p>将 immich_postgres 替换为实际的数据库卷名称。</p>
+</blockquote>
+</li>
+</ul>
+<ol start="2">
+<li><strong>查看当前版本和发布说明</strong></li>
+</ol>
+<ul>
+<li>检查你当前运行的 Immich 版本，可以通过 Web 界面（“设置”页面）或查看 .env 文件中的 IMMICH_VERSION。</li>
+<li>访问 Immich 的 <a target="_blank" rel="noopener" href="https://github.com/immich-app/immich/releases">GitHub Releases 页面</a>，查看最新版本的发布说明。注意是否有<strong>重大变更</strong>（breaking changes），这些可能需要额外配置或手动干预。</li>
+</ul>
+<ol start="3">
+<li><strong>进入 Immich 部署目录</strong><br>升级需要在包含 docker-compose.yml 和 .env 文件的目录中操作。假设你的 Immich 部署在 ~&#x2F;immich：<br><code>cd ~/immich-app</code></li>
+<li><strong>停止当前服务</strong><br>停止所有正在运行的 Immich 容器：<br><code>docker compose down</code></li>
+<li><strong>拉取最新镜像</strong><br>Immich 使用 Docker 镜像部署，拉取最新版本的镜像：<br><code>docker compose pull</code><br>这会下载 docker-compose.yml 中定义的最新镜像（默认情况下，镜像标签为 release，始终指向最新稳定版）。如果你在 .env 中指定了特定版本（例如 IMMICH_VERSION&#x3D;v1.94.1），需要手动更新为目标版本号，例如 v1.117.0。</li>
+<li><strong>更新配置文件（如果需要）</strong></li>
+</ol>
+<ul>
+<li>检查新版本的发布说明，看看 docker-compose.yml 或 .env 文件是否有变更。例如，新版本可能引入新的环境变量或修改服务配置。</li>
+<li>如果需要更新，可以从 <a target="_blank" rel="noopener" href="https://github.com/immich-app/immich/releases/latest">Immich 最新发布页面</a> 下载最新的 docker-compose.yml 文件，并与当前文件对比，合并你的自定义配置（例如卷路径、端口等）。<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">wget -O docker-compose.yml https://github.com/immich-app/immich/releases/latest/download/docker-compose.yml</span><br></pre></td></tr></table></figure></li>
+</ul>
+<ol start="7">
+<li><strong>启动新版本</strong><br><code>docker compose up -d</code><br>这会以后台模式启动所有容器，-d 表示在后台运行。</li>
+<li><strong>验证升级</strong></li>
+</ol>
+<ul>
+<li>检查容器状态，确保所有服务正常运行：<br><code>docker compose ps</code></li>
+<li>查看日志，确认没有错误：<br><code>docker compose logs</code></li>
+<li>访问 Immich 的 Web 界面（通常是 http:&#x2F;&#x2F;你的服务器IP:2283），确认版本已更新且数据完好。</li>
+</ul>
+<ol start="9">
+<li><strong>清理旧镜像（可选）</strong><br>升级后，旧的 Docker 镜像可能会占用空间，可以清理：<br><code>docker image prune</code></li>
+<li><strong>注意事项</strong></li>
+</ol>
+<ul>
+<li><strong>重大变更</strong>：如果跳过了多个版本（例如从 v1.94.1 到 v1.117.0），可能需要逐步升级，逐个版本检查发布说明并执行必要的迁移步骤。</li>
+<li><strong>自动化工具</strong>：不建议使用 Watchtower 等自动更新工具，因为 Immich 经常有重大变更，自动更新可能导致意外问题。</li>
+<li><strong>权限问题</strong>：如果遇到权限错误，确保以正确用户运行命令（可能需要 sudo）。</li>
+<li><strong>示例</strong><br>假设你的 .env 文件中 IMMICH_VERSION&#x3D;release，升级命令如下： <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">cd ~/immich </span><br><span class="line">docker compose down  </span><br><span class="line">docker compose pull  </span><br><span class="line">docker compose up -d </span><br><span class="line">docker compose logs --follow # 查看日志</span><br></pre></td></tr></table></figure>
+升级完成后，你的 Immich 应该运行最新版本，同时保留所有数据。如果有任何问题，可以回滚到备份并排查日志。</li>
+</ul>
+
+    </div>
+
+    
+    
+    
+
+      <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/linux/" rel="tag"># linux</a>
+          </div>
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/openwrt%E8%AE%BE%E7%BD%AE.html" rel="prev" title="openwrt设置">
+      <i class="fa fa-chevron-left"></i> openwrt设置
+    </a></div>
+      <div class="post-nav-item">
+    <a href="/MAS%E4%BD%BF%E7%94%A8%E6%96%B9%E6%B3%95.html" rel="next" title="MAS使用方法">
+      MAS使用方法 <i class="fa fa-chevron-right"></i>
+    </a></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+
+
+          </div>
+          
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#ubuntu%E7%9B%B8%E5%85%B3%E8%AE%BE%E7%BD%AE"><span class="nav-number">1.</span> <span class="nav-text">ubuntu相关设置</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#%E8%AE%BE%E7%BD%AE%E5%90%88%E7%9B%96%E4%B8%8D%E4%BC%91%E7%9C%A0"><span class="nav-number">1.1.</span> <span class="nav-text">设置合盖不休眠</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E6%9F%A5%E7%9C%8B%E7%94%B5%E6%B1%A0%E7%8A%B6%E6%80%81"><span class="nav-number">1.2.</span> <span class="nav-text">查看电池状态</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E6%9F%A5%E7%9C%8B%E7%BD%91%E7%BB%9C%E8%BF%9E%E6%8E%A5%E7%8A%B6%E6%80%81"><span class="nav-number">1.3.</span> <span class="nav-text">查看网络连接状态</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E8%87%AA%E5%8A%A8%E6%8C%82%E8%BD%BD%E7%A1%AC%E7%9B%98"><span class="nav-number">1.4.</span> <span class="nav-text">自动挂载硬盘</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E8%AE%BE%E7%BD%AEsmb%E5%85%B1%E4%BA%AB"><span class="nav-number">1.5.</span> <span class="nav-text">设置smb共享</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E5%AE%89%E8%A3%85frps"><span class="nav-number">1.6.</span> <span class="nav-text">安装frps</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E5%AE%89%E8%A3%85frpc"><span class="nav-number">1.7.</span> <span class="nav-text">安装frpc</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E5%AE%89%E8%A3%85docker"><span class="nav-number">1.8.</span> <span class="nav-text">安装docker</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E5%AE%89%E8%A3%85immich"><span class="nav-number">1.9.</span> <span class="nav-text">安装immich</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E6%9B%B4%E6%96%B0Immich"><span class="nav-number">1.10.</span> <span class="nav-text">更新Immich</span></a></li></ol></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="LuRen"
+      src="/images/bxh.png">
+  <p class="site-author-name" itemprop="name">LuRen</p>
+  <div class="site-description" itemprop="description">生命在于折腾</div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">27</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/categories/">
+          
+        <span class="site-state-item-count">2</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+          
+        <span class="site-state-item-count">8</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+
+
+
+      </div>
+        <div class="back-to-top motion-element">
+          <i class="fa fa-arrow-up"></i>
+          <span>0%</span>
+        </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+
+<div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2026</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">LuRen</span>
+</div>
+  <div class="powered-by">由 <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://pisces.theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Pisces</a> 强力驱动
+  </div>
+
+        
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/pisces.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+
+
+
+  
+
+
+
+
+  
+<script src="/js/local-search.js"></script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+</body>
+</html>

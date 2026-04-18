@@ -1,0 +1,492 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 8.1.1">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/bxh_32x32.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/bxh_32x32.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/font-awesome.min.css">
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"shuaiwcm.github.io","root":"/","scheme":"Pisces","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":true,"scrollpercent":true},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},"path":"search.xml"};
+  </script>
+
+  <meta name="description" content="这份教程结合了 Sagar 的“内核绕过”技术与 PM2 的进程管理，确保你的 AI 机器人在安卓端 24&#x2F;7 稳定运行。 🛠️ 前置准备 设备：Android 10 或更高。  Termux：请务必使用 F-Droid 版本。  API Key：准备好 Gemini API Key。">
+<meta property="og:type" content="article">
+<meta property="og:title" content="OpenClaw 在 Android Termux 上的全流程教程">
+<meta property="og:url" content="https://shuaiwcm.github.io/OpenClaw-%E5%9C%A8-Android-Termux-%E4%B8%8A%E7%9A%84%E5%85%A8%E6%B5%81%E7%A8%8B%E6%95%99%E7%A8%8B.html">
+<meta property="og:site_name" content="LuRen&#39; Blog">
+<meta property="og:description" content="这份教程结合了 Sagar 的“内核绕过”技术与 PM2 的进程管理，确保你的 AI 机器人在安卓端 24&#x2F;7 稳定运行。 🛠️ 前置准备 设备：Android 10 或更高。  Termux：请务必使用 F-Droid 版本。  API Key：准备好 Gemini API Key。">
+<meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2026-03-01T07:45:44.000Z">
+<meta property="article:modified_time" content="2026-03-12T02:47:13.074Z">
+<meta property="article:author" content="LuRen">
+<meta property="article:tag" content="linux">
+<meta name="twitter:card" content="summary">
+
+<link rel="canonical" href="https://shuaiwcm.github.io/OpenClaw-%E5%9C%A8-Android-Termux-%E4%B8%8A%E7%9A%84%E5%85%A8%E6%B5%81%E7%A8%8B%E6%95%99%E7%A8%8B.html">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'zh-CN'
+  };
+</script>
+
+  <title>OpenClaw 在 Android Termux 上的全流程教程 | LuRen' Blog</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <h1 class="site-title">LuRen' Blog</h1>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+        <i class="fa fa-search fa-fw fa-lg"></i>
+    </div>
+  </div>
+</div>
+
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-fw fa-home"></i>首页</a>
+
+  </li>
+        <li class="menu-item menu-item-tags">
+
+    <a href="/tags/" rel="section"><i class="fa fa-fw fa-tags"></i>标签</a>
+
+  </li>
+        <li class="menu-item menu-item-categories">
+
+    <a href="/categories/" rel="section"><i class="fa fa-fw fa-th"></i>分类</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-fw fa-archive"></i>归档</a>
+
+  </li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>搜索
+        </a>
+      </li>
+  </ul>
+</nav>
+
+
+
+  <div class="search-pop-overlay">
+    <div class="popup search-popup">
+        <div class="search-header">
+  <span class="search-icon">
+    <i class="fa fa-search"></i>
+  </span>
+  <div class="search-input-container">
+    <input autocomplete="off" autocapitalize="off"
+           placeholder="搜索..." spellcheck="false"
+           type="search" class="search-input">
+  </div>
+  <span class="popup-btn-close">
+    <i class="fa fa-times-circle"></i>
+  </span>
+</div>
+<div id="search-result">
+  <div id="no-result">
+    <i class="fa fa-spinner fa-pulse fa-5x fa-fw"></i>
+  </div>
+</div>
+
+    </div>
+  </div>
+
+</div>
+    </header>
+
+    
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content post posts-expand">
+            
+
+    
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://shuaiwcm.github.io/OpenClaw-%E5%9C%A8-Android-Termux-%E4%B8%8A%E7%9A%84%E5%85%A8%E6%B5%81%E7%A8%8B%E6%95%99%E7%A8%8B.html">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/bxh.png">
+      <meta itemprop="name" content="LuRen">
+      <meta itemprop="description" content="生命在于折腾">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="LuRen' Blog">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          OpenClaw 在 Android Termux 上的全流程教程
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2026-03-01 15:45:44" itemprop="dateCreated datePublished" datetime="2026-03-01T15:45:44+08:00">2026-03-01</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-calendar-check-o"></i>
+                </span>
+                <span class="post-meta-item-text">更新于</span>
+                <time title="修改时间：2026-03-12 10:47:13" itemprop="dateModified" datetime="2026-03-12T10:47:13+08:00">2026-03-12</time>
+              </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/%E6%8A%80%E6%9C%AF%E5%88%86%E4%BA%AB/" itemprop="url" rel="index"><span itemprop="name">技术分享</span></a>
+                </span>
+            </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <p>这份教程结合了 Sagar 的“内核绕过”技术与 PM2 的进程管理，确保你的 AI 机器人在安卓端 24&#x2F;7 稳定运行。</p>
+<h3 id="🛠️-前置准备"><a href="#🛠️-前置准备" class="headerlink" title="🛠️ 前置准备"></a>🛠️ 前置准备</h3><ol>
+<li><p><strong>设备</strong>：Android 10 或更高。</p>
+</li>
+<li><p><strong>Termux</strong>：请务必使用 <strong>F-Droid</strong> 版本。</p>
+</li>
+<li><p><strong>API Key</strong>：准备好 Gemini API Key。</p>
+</li>
+</ol>
+<span id="more"></span>
+
+
+<h3 id="1-环境搭建-Ubuntu-proot"><a href="#1-环境搭建-Ubuntu-proot" class="headerlink" title="1. 环境搭建 (Ubuntu proot)"></a>1. 环境搭建 (Ubuntu proot)</h3><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">pkg update &amp;&amp; pkg upgrade -y</span><br><span class="line">pkg install proot-distro -y</span><br><span class="line">proot-distro install ubuntu</span><br><span class="line">proot-distro login ubuntu</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<h3 id="2-安装-Node-js-与-OpenClaw"><a href="#2-安装-Node-js-与-OpenClaw" class="headerlink" title="2. 安装 Node.js 与 OpenClaw"></a>2. 安装 Node.js 与 OpenClaw</h3><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">apt update &amp;&amp; apt upgrade -y</span><br><span class="line">apt install curl git build-essential -y</span><br><span class="line">curl -fsSL https://deb.nodesource.com/setup_22.x | bash -</span><br><span class="line">apt install -y nodejs</span><br><span class="line">npm install -g openclaw@latest</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+
+<h3 id="3-核心补丁：Bionic-Bypass-解决-Error-13"><a href="#3-核心补丁：Bionic-Bypass-解决-Error-13" class="headerlink" title="3. 核心补丁：Bionic Bypass (解决 Error 13)"></a>3. 核心补丁：Bionic Bypass (解决 Error 13)</h3><p>这是防止 OpenClaw 闪退的关键。</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"># 创建劫持脚本</span><br><span class="line">cat &lt;&lt;EOF &gt; /root/hijack.js</span><br><span class="line">const os = require(&#x27;os&#x27;);</span><br><span class="line">os.networkInterfaces = () =&gt; (&#123;&#125;);</span><br><span class="line">EOF</span><br><span class="line"></span><br><span class="line"># 写入环境变量，确保全局生效</span><br><span class="line">echo &#x27;export NODE_OPTIONS=&quot;-r /root/hijack.js&quot;&#x27; &gt;&gt; ~/.bashrc</span><br><span class="line">source ~/.bashrc</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<h3 id="4-初始化配置"><a href="#4-初始化配置" class="headerlink" title="4. 初始化配置"></a>4. 初始化配置</h3><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">openclaw onboard</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<ul>
+<li><strong>注意</strong>：在网关绑定（Gateway Bind）时，务必选择 <code>127.0.0.1</code>。</li>
+</ul>
+<h3 id="5-调试运行-测试用"><a href="#5-调试运行-测试用" class="headerlink" title="5. 调试运行 (测试用)"></a>5. 调试运行 (测试用)</h3><p>在正式进入后台运行前，先手动测试是否能跑通：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">openclaw gateway --verbose</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<p>确认 Telegram 机器人有响应后，按 <code>Ctrl+C</code> 退出，进入下一步。</p>
+<h3 id="6-使用TMUX-持久化后台运行-新增"><a href="#6-使用TMUX-持久化后台运行-新增" class="headerlink" title="6. 使用TMUX 持久化后台运行 (新增)"></a>6. 使用TMUX 持久化后台运行 (新增)</h3><p>使用tmux可以让机器人即使在关闭终端窗口后依然运行。</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"># 在termux下创建tmux的实例</span><br><span class="line">tmux new -s openclaw</span><br><span class="line"># 进入实例后启动openclaw</span><br><span class="line">openclaw gateway --verbose</span><br><span class="line"></span><br><span class="line"># 退出当前实例</span><br><span class="line">ctrl + b  然后  d</span><br><span class="line"># 查看当前在后台运行的实例</span><br><span class="line">tmux ls</span><br><span class="line"># 进入实例</span><br><span class="line">tmux a -t openclaw</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<h3 id="7-手机端保活建议"><a href="#7-手机端保活建议" class="headerlink" title="7. 手机端保活建议"></a>7. 手机端保活建议</h3><ul>
+<li><p><strong>唤醒锁</strong>：在 Termux 菜单中点击 “Acquire wakelock”，或运行 <code>termux-wake-lock</code>。</p>
+</li>
+<li><p><strong>电池优化</strong>：在安卓设置中，将 Termux 设为“不优化电池使用”。</p>
+</li>
+<li><p><strong>控制台访问</strong>：手机浏览器访问 <code>http://127.0.0.1:18789</code> 管理面板。</p>
+</li>
+</ul>
+<h3 id="参考链接："><a href="#参考链接：" class="headerlink" title="参考链接："></a>参考链接：</h3><ul>
+<li><a target="_blank" rel="noopener" href="https://sagartamang.com/blog/openclaw-on-android-termux#2-install-dependencies">https://sagartamang.com/blog/openclaw-on-android-termux#2-install-dependencies</a></li>
+</ul>
+
+    </div>
+
+    
+    
+    
+
+      <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/linux/" rel="tag"># linux</a>
+          </div>
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/Linux-%E9%AB%98%E6%80%A7%E8%83%BD-eBPF-%E4%BB%A3%E7%90%86%EF%BC%9Adae-%E5%AE%89%E8%A3%85%E4%B8%8E%E5%85%A8%E8%83%BD%E9%85%8D%E7%BD%AE%E6%8C%87%E5%8D%97.html" rel="prev" title="Linux 高性能 eBPF 代理：dae 安装与全能配置指南">
+      <i class="fa fa-chevron-left"></i> Linux 高性能 eBPF 代理：dae 安装与全能配置指南
+    </a></div>
+      <div class="post-nav-item">
+    <a href="/%E5%A4%96%E7%BD%91-IPv4-%E8%AE%BF%E9%97%AE%E5%AE%B6%E7%94%A8%E7%BA%AF-IPv6-%E6%9C%8D%E5%8A%A1%EF%BC%88%E5%85%8D%E7%AB%AF%E5%8F%A3-%E5%85%A8-HTTPS-%E6%96%B9%E6%A1%88%EF%BC%89.html" rel="next" title="外网 IPv4 访问家用纯 IPv6 服务（免端口+全 HTTPS 方案）">
+      外网 IPv4 访问家用纯 IPv6 服务（免端口+全 HTTPS 方案） <i class="fa fa-chevron-right"></i>
+    </a></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+
+
+          </div>
+          
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#%F0%9F%9B%A0%EF%B8%8F-%E5%89%8D%E7%BD%AE%E5%87%86%E5%A4%87"><span class="nav-number">1.</span> <span class="nav-text">🛠️ 前置准备</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#1-%E7%8E%AF%E5%A2%83%E6%90%AD%E5%BB%BA-Ubuntu-proot"><span class="nav-number">2.</span> <span class="nav-text">1. 环境搭建 (Ubuntu proot)</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#2-%E5%AE%89%E8%A3%85-Node-js-%E4%B8%8E-OpenClaw"><span class="nav-number">3.</span> <span class="nav-text">2. 安装 Node.js 与 OpenClaw</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#3-%E6%A0%B8%E5%BF%83%E8%A1%A5%E4%B8%81%EF%BC%9ABionic-Bypass-%E8%A7%A3%E5%86%B3-Error-13"><span class="nav-number">4.</span> <span class="nav-text">3. 核心补丁：Bionic Bypass (解决 Error 13)</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#4-%E5%88%9D%E5%A7%8B%E5%8C%96%E9%85%8D%E7%BD%AE"><span class="nav-number">5.</span> <span class="nav-text">4. 初始化配置</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#5-%E8%B0%83%E8%AF%95%E8%BF%90%E8%A1%8C-%E6%B5%8B%E8%AF%95%E7%94%A8"><span class="nav-number">6.</span> <span class="nav-text">5. 调试运行 (测试用)</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#6-%E4%BD%BF%E7%94%A8TMUX-%E6%8C%81%E4%B9%85%E5%8C%96%E5%90%8E%E5%8F%B0%E8%BF%90%E8%A1%8C-%E6%96%B0%E5%A2%9E"><span class="nav-number">7.</span> <span class="nav-text">6. 使用TMUX 持久化后台运行 (新增)</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#7-%E6%89%8B%E6%9C%BA%E7%AB%AF%E4%BF%9D%E6%B4%BB%E5%BB%BA%E8%AE%AE"><span class="nav-number">8.</span> <span class="nav-text">7. 手机端保活建议</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%8F%82%E8%80%83%E9%93%BE%E6%8E%A5%EF%BC%9A"><span class="nav-number">9.</span> <span class="nav-text">参考链接：</span></a></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="LuRen"
+      src="/images/bxh.png">
+  <p class="site-author-name" itemprop="name">LuRen</p>
+  <div class="site-description" itemprop="description">生命在于折腾</div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">27</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/categories/">
+          
+        <span class="site-state-item-count">2</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+          
+        <span class="site-state-item-count">8</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+
+
+
+      </div>
+        <div class="back-to-top motion-element">
+          <i class="fa fa-arrow-up"></i>
+          <span>0%</span>
+        </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+
+<div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2026</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">LuRen</span>
+</div>
+  <div class="powered-by">由 <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://pisces.theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Pisces</a> 强力驱动
+  </div>
+
+        
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/pisces.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+
+
+
+  
+
+
+
+
+  
+<script src="/js/local-search.js"></script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+</body>
+</html>

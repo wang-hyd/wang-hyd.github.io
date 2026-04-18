@@ -1,0 +1,464 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 8.1.1">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/bxh_32x32.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/bxh_32x32.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/font-awesome.min.css">
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"shuaiwcm.github.io","root":"/","scheme":"Pisces","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":true,"scrollpercent":true},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},"path":"search.xml"};
+  </script>
+
+  <meta name="description" content="git仓库基础操作仓库基本管理初始化一个git仓库git init">
+<meta property="og:type" content="article">
+<meta property="og:title" content="git基本命令">
+<meta property="og:url" content="https://shuaiwcm.github.io/git%E5%9F%BA%E6%9C%AC%E5%91%BD%E4%BB%A4.html">
+<meta property="og:site_name" content="LuRen&#39; Blog">
+<meta property="og:description" content="git仓库基础操作仓库基本管理初始化一个git仓库git init">
+<meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2024-07-27T23:13:40.000Z">
+<meta property="article:modified_time" content="2024-12-20T06:13:33.272Z">
+<meta property="article:author" content="LuRen">
+<meta property="article:tag" content="linux">
+<meta property="article:tag" content="windows">
+<meta name="twitter:card" content="summary">
+
+<link rel="canonical" href="https://shuaiwcm.github.io/git%E5%9F%BA%E6%9C%AC%E5%91%BD%E4%BB%A4.html">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'zh-CN'
+  };
+</script>
+
+  <title>git基本命令 | LuRen' Blog</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <h1 class="site-title">LuRen' Blog</h1>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+        <i class="fa fa-search fa-fw fa-lg"></i>
+    </div>
+  </div>
+</div>
+
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-fw fa-home"></i>首页</a>
+
+  </li>
+        <li class="menu-item menu-item-tags">
+
+    <a href="/tags/" rel="section"><i class="fa fa-fw fa-tags"></i>标签</a>
+
+  </li>
+        <li class="menu-item menu-item-categories">
+
+    <a href="/categories/" rel="section"><i class="fa fa-fw fa-th"></i>分类</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-fw fa-archive"></i>归档</a>
+
+  </li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>搜索
+        </a>
+      </li>
+  </ul>
+</nav>
+
+
+
+  <div class="search-pop-overlay">
+    <div class="popup search-popup">
+        <div class="search-header">
+  <span class="search-icon">
+    <i class="fa fa-search"></i>
+  </span>
+  <div class="search-input-container">
+    <input autocomplete="off" autocapitalize="off"
+           placeholder="搜索..." spellcheck="false"
+           type="search" class="search-input">
+  </div>
+  <span class="popup-btn-close">
+    <i class="fa fa-times-circle"></i>
+  </span>
+</div>
+<div id="search-result">
+  <div id="no-result">
+    <i class="fa fa-spinner fa-pulse fa-5x fa-fw"></i>
+  </div>
+</div>
+
+    </div>
+  </div>
+
+</div>
+    </header>
+
+    
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content post posts-expand">
+            
+
+    
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://shuaiwcm.github.io/git%E5%9F%BA%E6%9C%AC%E5%91%BD%E4%BB%A4.html">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/bxh.png">
+      <meta itemprop="name" content="LuRen">
+      <meta itemprop="description" content="生命在于折腾">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="LuRen' Blog">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          git基本命令
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2024-07-28 07:13:40" itemprop="dateCreated datePublished" datetime="2024-07-28T07:13:40+08:00">2024-07-28</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-calendar-check-o"></i>
+                </span>
+                <span class="post-meta-item-text">更新于</span>
+                <time title="修改时间：2024-12-20 14:13:33" itemprop="dateModified" datetime="2024-12-20T14:13:33+08:00">2024-12-20</time>
+              </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/%E6%8A%80%E6%9C%AF%E5%88%86%E4%BA%AB/" itemprop="url" rel="index"><span itemprop="name">技术分享</span></a>
+                </span>
+            </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <h1 id="git仓库基础操作"><a href="#git仓库基础操作" class="headerlink" title="git仓库基础操作"></a>git仓库基础操作</h1><h2 id="仓库基本管理"><a href="#仓库基本管理" class="headerlink" title="仓库基本管理"></a>仓库基本管理</h2><p>初始化一个git仓库<br><code>git init</code>    </p>
+<span id="more"></span>
+
+<p>#初始化当前文件夹为一个git仓库</p>
+<h2 id="将文件添加到git的暂存区"><a href="#将文件添加到git的暂存区" class="headerlink" title="将文件添加到git的暂存区"></a>将文件添加到git的暂存区</h2><p><code>git add &quot;readme.txi&quot;</code><br>注：使用<code>git add -A</code>或<code>git add .</code>，可以提交当前仓库的所有改动</p>
+<h2 id="查看仓库当前文件提交状态"><a href="#查看仓库当前文件提交状态" class="headerlink" title="查看仓库当前文件提交状态"></a>查看仓库当前文件提交状态</h2><p><code>git status -s</code>  </p>
+<h2 id="从git的暂存区提交版本到仓库，参数-m后为当次提交的备注信息"><a href="#从git的暂存区提交版本到仓库，参数-m后为当次提交的备注信息" class="headerlink" title="从git的暂存区提交版本到仓库，参数-m后为当次提交的备注信息"></a>从git的暂存区提交版本到仓库，参数<code>-m</code>后为当次提交的备注信息</h2><p><code>git commit -m &quot;1.0.0&quot;</code>  </p>
+<h2 id="将本地仓库信息推送上传到服务器"><a href="#将本地仓库信息推送上传到服务器" class="headerlink" title="将本地仓库信息推送上传到服务器"></a>将本地仓库信息推送上传到服务器</h2><p><code>git push https://giteee.com/***/test.git</code><br>如果是克隆下来的仓库，可以省去链接<br>直接<code>git push</code>会提示输入用户名密码，可以配置TOKEN后，能过SSH克隆，再上传时不用输入密码。</p>
+<h1 id="远程仓库管理"><a href="#远程仓库管理" class="headerlink" title="远程仓库管理"></a>远程仓库管理</h1><h2 id="修改仓库名"><a href="#修改仓库名" class="headerlink" title="修改仓库名"></a>修改仓库名</h2><p>一般来讲，默认情况下，在执行克隆操作时，仓库名者是origin如果说多们想给它改名为wang，可以使用以下命令  </p>
+<p><code>git remote rename origin wang</code>  </p>
+<h2 id="添加一个仓库"><a href="#添加一个仓库" class="headerlink" title="添加一个仓库"></a>添加一个仓库</h2><p>在不执行克隆操作时，如果想将一个远程仓库添加到本地仓库中，可以执行<br><code>git remote add origin &quot;https://&quot;</code><br>注意：<code>origin</code>是你仓库的别名，可以随便改，但请务必不要与已有的仓库别名冲突，仓库地址一般来讲支持<code>http/https/ssh/git</code>等协议，其他协议地址请勿添加</p>
+<h2 id="查看当前仓库对应的远程仓库地址"><a href="#查看当前仓库对应的远程仓库地址" class="headerlink" title="查看当前仓库对应的远程仓库地址"></a>查看当前仓库对应的远程仓库地址</h2><p><code>git remote -v</code><br>这条命令能显示你当前仓库中已经添加了的倒库名和对应的仓库地址，通常来讲，会有两条一模一样的记录，分别是fetch和push，其中fetch是用来从远程同步，push是用来推送到远程。</p>
+<h2 id="修改仓库对应的远程仓库地址"><a href="#修改仓库对应的远程仓库地址" class="headerlink" title="修改仓库对应的远程仓库地址"></a>修改仓库对应的远程仓库地址</h2><p><code>git remote set-url origin &quot;https://</code></p>
+
+    </div>
+
+    
+    
+    
+
+      <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/windows/" rel="tag"># windows</a>
+              <a href="/tags/linux/" rel="tag"># linux</a>
+          </div>
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/tpclash%E5%B0%9D%E8%AF%95%E8%AE%B0%E5%BD%95.html" rel="prev" title="tpclash尝试记录">
+      <i class="fa fa-chevron-left"></i> tpclash尝试记录
+    </a></div>
+      <div class="post-nav-item">
+    <a href="/%E5%87%A1%E7%A7%91%E7%BD%91%E7%AB%99ssl%E8%AF%81%E4%B9%A6%E5%88%B6%E4%BD%9C%E5%8F%8A%E4%B8%8A%E4%BC%A0.html" rel="next" title="凡科网站ssl证书制作及上传">
+      凡科网站ssl证书制作及上传 <i class="fa fa-chevron-right"></i>
+    </a></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+
+
+          </div>
+          
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#git%E4%BB%93%E5%BA%93%E5%9F%BA%E7%A1%80%E6%93%8D%E4%BD%9C"><span class="nav-number">1.</span> <span class="nav-text">git仓库基础操作</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%BB%93%E5%BA%93%E5%9F%BA%E6%9C%AC%E7%AE%A1%E7%90%86"><span class="nav-number">1.1.</span> <span class="nav-text">仓库基本管理</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%B0%86%E6%96%87%E4%BB%B6%E6%B7%BB%E5%8A%A0%E5%88%B0git%E7%9A%84%E6%9A%82%E5%AD%98%E5%8C%BA"><span class="nav-number">1.2.</span> <span class="nav-text">将文件添加到git的暂存区</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%9F%A5%E7%9C%8B%E4%BB%93%E5%BA%93%E5%BD%93%E5%89%8D%E6%96%87%E4%BB%B6%E6%8F%90%E4%BA%A4%E7%8A%B6%E6%80%81"><span class="nav-number">1.3.</span> <span class="nav-text">查看仓库当前文件提交状态</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%BB%8Egit%E7%9A%84%E6%9A%82%E5%AD%98%E5%8C%BA%E6%8F%90%E4%BA%A4%E7%89%88%E6%9C%AC%E5%88%B0%E4%BB%93%E5%BA%93%EF%BC%8C%E5%8F%82%E6%95%B0-m%E5%90%8E%E4%B8%BA%E5%BD%93%E6%AC%A1%E6%8F%90%E4%BA%A4%E7%9A%84%E5%A4%87%E6%B3%A8%E4%BF%A1%E6%81%AF"><span class="nav-number">1.4.</span> <span class="nav-text">从git的暂存区提交版本到仓库，参数-m后为当次提交的备注信息</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%B0%86%E6%9C%AC%E5%9C%B0%E4%BB%93%E5%BA%93%E4%BF%A1%E6%81%AF%E6%8E%A8%E9%80%81%E4%B8%8A%E4%BC%A0%E5%88%B0%E6%9C%8D%E5%8A%A1%E5%99%A8"><span class="nav-number">1.5.</span> <span class="nav-text">将本地仓库信息推送上传到服务器</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E8%BF%9C%E7%A8%8B%E4%BB%93%E5%BA%93%E7%AE%A1%E7%90%86"><span class="nav-number">2.</span> <span class="nav-text">远程仓库管理</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%BF%AE%E6%94%B9%E4%BB%93%E5%BA%93%E5%90%8D"><span class="nav-number">2.1.</span> <span class="nav-text">修改仓库名</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%B7%BB%E5%8A%A0%E4%B8%80%E4%B8%AA%E4%BB%93%E5%BA%93"><span class="nav-number">2.2.</span> <span class="nav-text">添加一个仓库</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%9F%A5%E7%9C%8B%E5%BD%93%E5%89%8D%E4%BB%93%E5%BA%93%E5%AF%B9%E5%BA%94%E7%9A%84%E8%BF%9C%E7%A8%8B%E4%BB%93%E5%BA%93%E5%9C%B0%E5%9D%80"><span class="nav-number">2.3.</span> <span class="nav-text">查看当前仓库对应的远程仓库地址</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%BF%AE%E6%94%B9%E4%BB%93%E5%BA%93%E5%AF%B9%E5%BA%94%E7%9A%84%E8%BF%9C%E7%A8%8B%E4%BB%93%E5%BA%93%E5%9C%B0%E5%9D%80"><span class="nav-number">2.4.</span> <span class="nav-text">修改仓库对应的远程仓库地址</span></a></li></ol></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="LuRen"
+      src="/images/bxh.png">
+  <p class="site-author-name" itemprop="name">LuRen</p>
+  <div class="site-description" itemprop="description">生命在于折腾</div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">27</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/categories/">
+          
+        <span class="site-state-item-count">2</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+          
+        <span class="site-state-item-count">8</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+
+
+
+      </div>
+        <div class="back-to-top motion-element">
+          <i class="fa fa-arrow-up"></i>
+          <span>0%</span>
+        </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+
+<div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2026</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">LuRen</span>
+</div>
+  <div class="powered-by">由 <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://pisces.theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Pisces</a> 强力驱动
+  </div>
+
+        
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/pisces.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+
+
+
+  
+
+
+
+
+  
+<script src="/js/local-search.js"></script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+</body>
+</html>

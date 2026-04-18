@@ -1,0 +1,585 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 8.1.1">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/bxh_32x32.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/bxh_32x32.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/font-awesome.min.css">
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"shuaiwcm.github.io","root":"/","scheme":"Pisces","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":true,"scrollpercent":true},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},"path":"search.xml"};
+  </script>
+
+  <meta name="description" content="overlay扩容 准备好U盘，并格式化为ext4格式， 插上U盘到路由器，在挂载点找到自动挂载未配置磁盘分区，并关掉。 可以在挂载点里找到自己的U盘，记住设备名，一般为&#x2F;dev&#x2F;sda1 进行数据迁移">
+<meta property="og:type" content="article">
+<meta property="og:title" content="openwrt设置">
+<meta property="og:url" content="https://shuaiwcm.github.io/openwrt%E8%AE%BE%E7%BD%AE.html">
+<meta property="og:site_name" content="LuRen&#39; Blog">
+<meta property="og:description" content="overlay扩容 准备好U盘，并格式化为ext4格式， 插上U盘到路由器，在挂载点找到自动挂载未配置磁盘分区，并关掉。 可以在挂载点里找到自己的U盘，记住设备名，一般为&#x2F;dev&#x2F;sda1 进行数据迁移">
+<meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2025-01-02T16:20:52.000Z">
+<meta property="article:modified_time" content="2025-01-06T02:54:51.905Z">
+<meta property="article:author" content="LuRen">
+<meta property="article:tag" content="openwrt">
+<meta name="twitter:card" content="summary">
+
+<link rel="canonical" href="https://shuaiwcm.github.io/openwrt%E8%AE%BE%E7%BD%AE.html">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'zh-CN'
+  };
+</script>
+
+  <title>openwrt设置 | LuRen' Blog</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <h1 class="site-title">LuRen' Blog</h1>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+        <i class="fa fa-search fa-fw fa-lg"></i>
+    </div>
+  </div>
+</div>
+
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-fw fa-home"></i>首页</a>
+
+  </li>
+        <li class="menu-item menu-item-tags">
+
+    <a href="/tags/" rel="section"><i class="fa fa-fw fa-tags"></i>标签</a>
+
+  </li>
+        <li class="menu-item menu-item-categories">
+
+    <a href="/categories/" rel="section"><i class="fa fa-fw fa-th"></i>分类</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-fw fa-archive"></i>归档</a>
+
+  </li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>搜索
+        </a>
+      </li>
+  </ul>
+</nav>
+
+
+
+  <div class="search-pop-overlay">
+    <div class="popup search-popup">
+        <div class="search-header">
+  <span class="search-icon">
+    <i class="fa fa-search"></i>
+  </span>
+  <div class="search-input-container">
+    <input autocomplete="off" autocapitalize="off"
+           placeholder="搜索..." spellcheck="false"
+           type="search" class="search-input">
+  </div>
+  <span class="popup-btn-close">
+    <i class="fa fa-times-circle"></i>
+  </span>
+</div>
+<div id="search-result">
+  <div id="no-result">
+    <i class="fa fa-spinner fa-pulse fa-5x fa-fw"></i>
+  </div>
+</div>
+
+    </div>
+  </div>
+
+</div>
+    </header>
+
+    
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content post posts-expand">
+            
+
+    
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://shuaiwcm.github.io/openwrt%E8%AE%BE%E7%BD%AE.html">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/bxh.png">
+      <meta itemprop="name" content="LuRen">
+      <meta itemprop="description" content="生命在于折腾">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="LuRen' Blog">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          openwrt设置
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2025-01-03 00:20:52" itemprop="dateCreated datePublished" datetime="2025-01-03T00:20:52+08:00">2025-01-03</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-calendar-check-o"></i>
+                </span>
+                <span class="post-meta-item-text">更新于</span>
+                <time title="修改时间：2025-01-06 10:54:51" itemprop="dateModified" datetime="2025-01-06T10:54:51+08:00">2025-01-06</time>
+              </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/%E6%8A%80%E6%9C%AF%E5%88%86%E4%BA%AB/" itemprop="url" rel="index"><span itemprop="name">技术分享</span></a>
+                </span>
+            </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <h3 id="overlay扩容"><a href="#overlay扩容" class="headerlink" title="overlay扩容"></a>overlay扩容</h3><ul>
+<li>准备好U盘，并格式化为ext4格式，</li>
+<li>插上U盘到路由器，在挂载点找到自动挂载未配置磁盘分区，并关掉。</li>
+<li>可以在挂载点里找到自己的U盘，记住设备名，一般为<code>/dev/sda1</code></li>
+<li>进行数据迁移<br><span id="more"></span><ul>
+<li>创建临时挂载点<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">mkdir /mnt/extdisk</span><br></pre></td></tr></table></figure></li>
+<li>挂载磁盘到临时挂载点<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">mount /dev/sda1 /mnt/extdisk</span><br></pre></td></tr></table></figure></li>
+<li>复制整个&#x2F;overlay到U盘中<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">tar -C /overlay -cvf - . | tar -C /mnt/extdisk -xf -</span><br></pre></td></tr></table></figure></li>
+<li>刷新一下<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">sync</span><br></pre></td></tr></table></figure></li>
+<li>卸载临时挂在点，因为下一步就是要挂载到&#x2F;overlay目录了。<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">umount  /mnt/extdisk</span><br></pre></td></tr></table></figure></li>
+</ul>
+</li>
+<li>在web界面设置挂载点，添加挂载点，挂载点选‘作为外部voerlay’并保存（一定要保存&#x2F;保存并应用），</li>
+<li>然后重启路由。</li>
+<li>重启后进入软件包或在挂载点查看是否成功</li>
+</ul>
+<h3 id="openclash设置"><a href="#openclash设置" class="headerlink" title="openclash设置"></a>openclash设置</h3><h4 id="插件设置"><a href="#插件设置" class="headerlink" title="插件设置"></a>插件设置</h4><ul>
+<li><p>覆写设置：</p>
+<ul>
+<li>Github 地址修改：<a target="_blank" rel="noopener" href="https://cdn.jsdelivr.net/">https://cdn.jsdelivr.net</a></li>
+<li>模式设置：</li>
+<li>勾选：使用 <code>Meta</code> 内核（支持的协议比较多，而且还支持一些新的协议）</li>
+<li>运行模式选择<code>Fake-IP</code>模式（加快响应速度、缩短网页加载时间）</li>
+<li>代理模式选择：<code>Rule</code>（策略代理），这里根据自己的实际需要来选择</li>
+<li>其他的默认选择即可</li>
+</ul>
+</li>
+<li><p>流量控制：</p>
+<ul>
+<li>勾选：路由本机代理</li>
+<li>勾选：禁用 <code>QUIC</code></li>
+<li>勾选：仅允许内网</li>
+<li>大陆域名DNS服务器：填写运营商的</li>
+</ul>
+</li>
+<li><p>DNS设置：</p>
+<ul>
+<li>本地 DNS 劫持选择：使用 <code>Dnsmasq</code> 转发</li>
+<li>启用禁止 <code>Dnsmasq</code> 缓存 DNS</li>
+</ul>
+</li>
+<li><p>GEO数据库订阅（有助于确定特定IP地址的地理位置信息）：</p>
+<ul>
+<li>勾选自动更新 <code>GeoIP MMDB</code> 数据库</li>
+<li>勾选自动更新 <code>GeoSite</code> 数据库</li>
+</ul>
+</li>
+</ul>
+<h4 id="覆写设置"><a href="#覆写设置" class="headerlink" title="覆写设置"></a>覆写设置</h4><ul>
+<li>DNS设置<ul>
+<li>勾选：自定义上游 DNS 服务器</li>
+<li>勾选：<code>Fake-IP </code>持久化</li>
+</ul>
+</li>
+<li>Mate设置<ul>
+<li>勾选：启用 TCP 并发</li>
+<li>勾选：启用流量（域名）探测</li>
+</ul>
+</li>
+</ul>
+<h4 id="配合MosDNS时设置"><a href="#配合MosDNS时设置" class="headerlink" title="配合MosDNS时设置"></a>配合MosDNS时设置</h4><ul>
+<li>插件：<ul>
+<li>DNS：停用</li>
+</ul>
+</li>
+<li>覆写：<ul>
+<li>DNS：勾选自定义上游DNS</li>
+<li>NameSerever：全部取消，新建一个<code>127.0.0.1:5335</code>，并启用</li>
+<li>FallBack：全部取消</li>
+</ul>
+</li>
+</ul>
+<h3 id="MosDNS设置"><a href="#MosDNS设置" class="headerlink" title="MosDNS设置"></a>MosDNS设置</h3><h4 id="基本设置"><a href="#基本设置" class="headerlink" title="基本设置"></a>基本设置</h4><ul>
+<li>勾选启用——设置监听端口（这里可以自定义）——勾选自定义国内DNS——选择对应的DNS（建议选择加密DNS）——远程DNS根据自己实际情况选择（一般保持默认即可）——<code>Bootstrap DNS</code> 服务器保持默认或者可以自行测试一下</li>
+<li>设置监听端口：5335</li>
+<li>勾选自定义国内DNS，选择对应的DNS（建议选择加密DNS）</li>
+<li>远程DNS根据自己实际情况选择（一般保持默认即可）</li>
+<li><code>Bootstrap DNS</code> 服务器保持默认或者可以自行测试一下</li>
+</ul>
+<h4 id="高级设置"><a href="#高级设置" class="headerlink" title="高级设置"></a><strong>高级设置</strong></h4><ul>
+<li>DNS服务器并发数输入2</li>
+<li>勾选防止DNS泄露</li>
+<li>勾选启用DNS广告过滤（可选可不选）</li>
+<li>规则选择<code>anti-AD</code></li>
+</ul>
+<h3 id="zerotier设置"><a href="#zerotier设置" class="headerlink" title="zerotier设置"></a>zerotier设置</h3><h4 id="VPN-zerotier-ZeroTier-Network-ID中填入ID"><a href="#VPN-zerotier-ZeroTier-Network-ID中填入ID" class="headerlink" title="VPN&gt;zerotier&gt;ZeroTier Network ID中填入ID"></a>VPN&gt;zerotier&gt;ZeroTier Network ID中填入ID</h4><h4 id="管理界面设置网络-接口-添加新接口"><a href="#管理界面设置网络-接口-添加新接口" class="headerlink" title="管理界面设置网络&gt;接口&gt;添加新接口"></a>管理界面设置网络&gt;接口&gt;添加新接口</h4><ul>
+<li>接口名称随意</li>
+<li>协议：不配置协议</li>
+<li>接口：选zti开头的</li>
+<li>提交后配置防火墙</li>
+<li>自定义一个新防火墙<code>zerotier</code></li>
+<li>保存并应用</li>
+</ul>
+<h4 id="管理界面设置网络-防火墙，编辑zerotier"><a href="#管理界面设置网络-防火墙，编辑zerotier" class="headerlink" title="管理界面设置网络&gt;防火墙，编辑zerotier"></a>管理界面设置网络&gt;防火墙，编辑zerotier</h4><ul>
+<li>全选接受</li>
+<li>IP动态伪装选中</li>
+<li>允许转发及转发到都选LAN</li>
+</ul>
+<h4 id="通信规则-添加规则并编辑"><a href="#通信规则-添加规则并编辑" class="headerlink" title="通信规则&gt;添加规则并编辑"></a>通信规则&gt;添加规则并编辑</h4><ul>
+<li>协议：<code>UDP</code></li>
+<li>源区域：任意区域</li>
+<li>目标区域：设备</li>
+<li>端口：9993</li>
+<li>保存并应用</li>
+</ul>
+<h4 id="zerotier官网上设置"><a href="#zerotier官网上设置" class="headerlink" title="zerotier官网上设置"></a>zerotier官网上设置</h4><ul>
+<li><code>Advanced&gt;Add Routes</code></li>
+<li><code>Destination</code>：填写局域网网段</li>
+<li><code>Via</code>：填写路由的虚拟网址</li>
+<li>添加</li>
+</ul>
+<h3 id="通过DHCP自定义分配网关"><a href="#通过DHCP自定义分配网关" class="headerlink" title="通过DHCP自定义分配网关"></a>通过DHCP自定义分配网关</h3><h4 id="首先你需要给设备绑定静态IP"><a href="#首先你需要给设备绑定静态IP" class="headerlink" title="首先你需要给设备绑定静态IP"></a>首先你需要给设备绑定静态IP</h4><h4 id="在openwrt中依次选择：网络-接口-LAN-DHCP-高级设置，在DHCP选项中设置"><a href="#在openwrt中依次选择：网络-接口-LAN-DHCP-高级设置，在DHCP选项中设置" class="headerlink" title="在openwrt中依次选择：网络-&gt;接口-&gt;LAN-&gt;DHCP-&gt;高级设置，在DHCP选项中设置"></a>在openwrt中依次选择：网络-&gt;接口-&gt;LAN-&gt;DHCP-&gt;高级设置，在DHCP选项中设置</h4><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">tag:name,3,192.168.50.2`</span><br></pre></td></tr></table></figure>
+<ul>
+<li>参数说明，每个<code>,</code>为一项<ul>
+<li><code>tag:</code>标签设置，后面的名字可以自定义</li>
+<li>第二项<code>3</code>代表设置网关，常用可选项有：<ul>
+<li><code>1</code>代表设置子网掩码</li>
+<li><code>3</code>代表设置网关</li>
+<li><code>6</code>代表设置DNS</li>
+</ul>
+</li>
+<li>第三项为你要设置的静态IP地址</li>
+</ul>
+</li>
+</ul>
+<h4 id="通过这样的设置，在你有旁路网关时，可以灵活的给内网设备分配网关，而不用在每个设备上设置"><a href="#通过这样的设置，在你有旁路网关时，可以灵活的给内网设备分配网关，而不用在每个设备上设置" class="headerlink" title="通过这样的设置，在你有旁路网关时，可以灵活的给内网设备分配网关，而不用在每个设备上设置"></a>通过这样的设置，在你有旁路网关时，可以灵活的给内网设备分配网关，而不用在每个设备上设置</h4><h3 id="切换openwrt启动分区"><a href="#切换openwrt启动分区" class="headerlink" title="切换openwrt启动分区"></a>切换openwrt启动分区</h3><h4 id="确认当前分区状态"><a href="#确认当前分区状态" class="headerlink" title="确认当前分区状态"></a>确认当前分区状态</h4><p>检查设备当前运行的分区以及可用的分区信息：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">cat /proc/mtd</span><br></pre></td></tr></table></figure>
+<h4 id="查看和设置分区环境变量"><a href="#查看和设置分区环境变量" class="headerlink" title="查看和设置分区环境变量"></a>查看和设置分区环境变量</h4><p>可以通过以下命令检查当前分区设置：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">fw_printenv</span><br></pre></td></tr></table></figure>
+<p>查找类似于boot_part的环境变量。</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">boot_part=1</span><br></pre></td></tr></table></figure>
+<p>如果需要修改分区，可以使用fw_setenv命令：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">fw_setenv boot_part 2</span><br></pre></td></tr></table></figure>
+<h4 id="重启设备切换分区"><a href="#重启设备切换分区" class="headerlink" title="重启设备切换分区"></a>重启设备切换分区</h4><p>设置完成后，重启设备使更改生效：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">reboot</span><br></pre></td></tr></table></figure>
+<p>重启完成后验证一下</p>
+
+    </div>
+
+    
+    
+    
+
+      <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/openwrt/" rel="tag"># openwrt</a>
+          </div>
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/%E5%9C%A8linux%E4%B8%AD%E4%BD%BF%E7%94%A8ffmpeg.html" rel="prev" title="在linux中使用ffmpeg">
+      <i class="fa fa-chevron-left"></i> 在linux中使用ffmpeg
+    </a></div>
+      <div class="post-nav-item">
+    <a href="/linux%E8%AE%BE%E7%BD%AE.html" rel="next" title="linux设置">
+      linux设置 <i class="fa fa-chevron-right"></i>
+    </a></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+
+
+          </div>
+          
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#overlay%E6%89%A9%E5%AE%B9"><span class="nav-number">1.</span> <span class="nav-text">overlay扩容</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#openclash%E8%AE%BE%E7%BD%AE"><span class="nav-number">2.</span> <span class="nav-text">openclash设置</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#%E6%8F%92%E4%BB%B6%E8%AE%BE%E7%BD%AE"><span class="nav-number">2.1.</span> <span class="nav-text">插件设置</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E8%A6%86%E5%86%99%E8%AE%BE%E7%BD%AE"><span class="nav-number">2.2.</span> <span class="nav-text">覆写设置</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E9%85%8D%E5%90%88MosDNS%E6%97%B6%E8%AE%BE%E7%BD%AE"><span class="nav-number">2.3.</span> <span class="nav-text">配合MosDNS时设置</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#MosDNS%E8%AE%BE%E7%BD%AE"><span class="nav-number">3.</span> <span class="nav-text">MosDNS设置</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#%E5%9F%BA%E6%9C%AC%E8%AE%BE%E7%BD%AE"><span class="nav-number">3.1.</span> <span class="nav-text">基本设置</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E9%AB%98%E7%BA%A7%E8%AE%BE%E7%BD%AE"><span class="nav-number">3.2.</span> <span class="nav-text">高级设置</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#zerotier%E8%AE%BE%E7%BD%AE"><span class="nav-number">4.</span> <span class="nav-text">zerotier设置</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#VPN-zerotier-ZeroTier-Network-ID%E4%B8%AD%E5%A1%AB%E5%85%A5ID"><span class="nav-number">4.1.</span> <span class="nav-text">VPN&gt;zerotier&gt;ZeroTier Network ID中填入ID</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E7%AE%A1%E7%90%86%E7%95%8C%E9%9D%A2%E8%AE%BE%E7%BD%AE%E7%BD%91%E7%BB%9C-%E6%8E%A5%E5%8F%A3-%E6%B7%BB%E5%8A%A0%E6%96%B0%E6%8E%A5%E5%8F%A3"><span class="nav-number">4.2.</span> <span class="nav-text">管理界面设置网络&gt;接口&gt;添加新接口</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E7%AE%A1%E7%90%86%E7%95%8C%E9%9D%A2%E8%AE%BE%E7%BD%AE%E7%BD%91%E7%BB%9C-%E9%98%B2%E7%81%AB%E5%A2%99%EF%BC%8C%E7%BC%96%E8%BE%91zerotier"><span class="nav-number">4.3.</span> <span class="nav-text">管理界面设置网络&gt;防火墙，编辑zerotier</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E9%80%9A%E4%BF%A1%E8%A7%84%E5%88%99-%E6%B7%BB%E5%8A%A0%E8%A7%84%E5%88%99%E5%B9%B6%E7%BC%96%E8%BE%91"><span class="nav-number">4.4.</span> <span class="nav-text">通信规则&gt;添加规则并编辑</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#zerotier%E5%AE%98%E7%BD%91%E4%B8%8A%E8%AE%BE%E7%BD%AE"><span class="nav-number">4.5.</span> <span class="nav-text">zerotier官网上设置</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E9%80%9A%E8%BF%87DHCP%E8%87%AA%E5%AE%9A%E4%B9%89%E5%88%86%E9%85%8D%E7%BD%91%E5%85%B3"><span class="nav-number">5.</span> <span class="nav-text">通过DHCP自定义分配网关</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#%E9%A6%96%E5%85%88%E4%BD%A0%E9%9C%80%E8%A6%81%E7%BB%99%E8%AE%BE%E5%A4%87%E7%BB%91%E5%AE%9A%E9%9D%99%E6%80%81IP"><span class="nav-number">5.1.</span> <span class="nav-text">首先你需要给设备绑定静态IP</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E5%9C%A8openwrt%E4%B8%AD%E4%BE%9D%E6%AC%A1%E9%80%89%E6%8B%A9%EF%BC%9A%E7%BD%91%E7%BB%9C-%E6%8E%A5%E5%8F%A3-LAN-DHCP-%E9%AB%98%E7%BA%A7%E8%AE%BE%E7%BD%AE%EF%BC%8C%E5%9C%A8DHCP%E9%80%89%E9%A1%B9%E4%B8%AD%E8%AE%BE%E7%BD%AE"><span class="nav-number">5.2.</span> <span class="nav-text">在openwrt中依次选择：网络-&gt;接口-&gt;LAN-&gt;DHCP-&gt;高级设置，在DHCP选项中设置</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E9%80%9A%E8%BF%87%E8%BF%99%E6%A0%B7%E7%9A%84%E8%AE%BE%E7%BD%AE%EF%BC%8C%E5%9C%A8%E4%BD%A0%E6%9C%89%E6%97%81%E8%B7%AF%E7%BD%91%E5%85%B3%E6%97%B6%EF%BC%8C%E5%8F%AF%E4%BB%A5%E7%81%B5%E6%B4%BB%E7%9A%84%E7%BB%99%E5%86%85%E7%BD%91%E8%AE%BE%E5%A4%87%E5%88%86%E9%85%8D%E7%BD%91%E5%85%B3%EF%BC%8C%E8%80%8C%E4%B8%8D%E7%94%A8%E5%9C%A8%E6%AF%8F%E4%B8%AA%E8%AE%BE%E5%A4%87%E4%B8%8A%E8%AE%BE%E7%BD%AE"><span class="nav-number">5.3.</span> <span class="nav-text">通过这样的设置，在你有旁路网关时，可以灵活的给内网设备分配网关，而不用在每个设备上设置</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%88%87%E6%8D%A2openwrt%E5%90%AF%E5%8A%A8%E5%88%86%E5%8C%BA"><span class="nav-number">6.</span> <span class="nav-text">切换openwrt启动分区</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#%E7%A1%AE%E8%AE%A4%E5%BD%93%E5%89%8D%E5%88%86%E5%8C%BA%E7%8A%B6%E6%80%81"><span class="nav-number">6.1.</span> <span class="nav-text">确认当前分区状态</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E6%9F%A5%E7%9C%8B%E5%92%8C%E8%AE%BE%E7%BD%AE%E5%88%86%E5%8C%BA%E7%8E%AF%E5%A2%83%E5%8F%98%E9%87%8F"><span class="nav-number">6.2.</span> <span class="nav-text">查看和设置分区环境变量</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E9%87%8D%E5%90%AF%E8%AE%BE%E5%A4%87%E5%88%87%E6%8D%A2%E5%88%86%E5%8C%BA"><span class="nav-number">6.3.</span> <span class="nav-text">重启设备切换分区</span></a></li></ol></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="LuRen"
+      src="/images/bxh.png">
+  <p class="site-author-name" itemprop="name">LuRen</p>
+  <div class="site-description" itemprop="description">生命在于折腾</div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">27</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/categories/">
+          
+        <span class="site-state-item-count">2</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+          
+        <span class="site-state-item-count">8</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+
+
+
+      </div>
+        <div class="back-to-top motion-element">
+          <i class="fa fa-arrow-up"></i>
+          <span>0%</span>
+        </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+
+<div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2026</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">LuRen</span>
+</div>
+  <div class="powered-by">由 <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://pisces.theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Pisces</a> 强力驱动
+  </div>
+
+        
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/pisces.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+
+
+
+  
+
+
+
+
+  
+<script src="/js/local-search.js"></script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+</body>
+</html>

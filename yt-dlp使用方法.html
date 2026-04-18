@@ -1,0 +1,530 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 8.1.1">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/bxh_32x32.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/bxh_32x32.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/font-awesome.min.css">
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"shuaiwcm.github.io","root":"/","scheme":"Pisces","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":true,"scrollpercent":true},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},"path":"search.xml"};
+  </script>
+
+  <meta name="description" content="yt-dlp 使用方法总结 (Windows)1. 准备工作 下载 yt-dlp： 从 https:&#x2F;&#x2F;github.com&#x2F;yt-dlp&#x2F;yt-dlp&#x2F;releases&#x2F;latest 下载 yt-dlp.exe。 存放路径：例如 C:\Users\mr.wang\Desktop\youtobe。   安装 FFmpeg（可选但推荐）： 下载：https:&#x2F;&#x2F;www.gyan.dev&#x2F;ffmpeg">
+<meta property="og:type" content="article">
+<meta property="og:title" content="yt-dlp使用方法">
+<meta property="og:url" content="https://shuaiwcm.github.io/yt-dlp%E4%BD%BF%E7%94%A8%E6%96%B9%E6%B3%95.html">
+<meta property="og:site_name" content="LuRen&#39; Blog">
+<meta property="og:description" content="yt-dlp 使用方法总结 (Windows)1. 准备工作 下载 yt-dlp： 从 https:&#x2F;&#x2F;github.com&#x2F;yt-dlp&#x2F;yt-dlp&#x2F;releases&#x2F;latest 下载 yt-dlp.exe。 存放路径：例如 C:\Users\mr.wang\Desktop\youtobe。   安装 FFmpeg（可选但推荐）： 下载：https:&#x2F;&#x2F;www.gyan.dev&#x2F;ffmpeg">
+<meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2025-03-17T16:04:28.000Z">
+<meta property="article:modified_time" content="2025-03-18T00:07:41.039Z">
+<meta property="article:author" content="LuRen">
+<meta property="article:tag" content="windows">
+<meta name="twitter:card" content="summary">
+
+<link rel="canonical" href="https://shuaiwcm.github.io/yt-dlp%E4%BD%BF%E7%94%A8%E6%96%B9%E6%B3%95.html">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'zh-CN'
+  };
+</script>
+
+  <title>yt-dlp使用方法 | LuRen' Blog</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <h1 class="site-title">LuRen' Blog</h1>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+        <i class="fa fa-search fa-fw fa-lg"></i>
+    </div>
+  </div>
+</div>
+
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-fw fa-home"></i>首页</a>
+
+  </li>
+        <li class="menu-item menu-item-tags">
+
+    <a href="/tags/" rel="section"><i class="fa fa-fw fa-tags"></i>标签</a>
+
+  </li>
+        <li class="menu-item menu-item-categories">
+
+    <a href="/categories/" rel="section"><i class="fa fa-fw fa-th"></i>分类</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-fw fa-archive"></i>归档</a>
+
+  </li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>搜索
+        </a>
+      </li>
+  </ul>
+</nav>
+
+
+
+  <div class="search-pop-overlay">
+    <div class="popup search-popup">
+        <div class="search-header">
+  <span class="search-icon">
+    <i class="fa fa-search"></i>
+  </span>
+  <div class="search-input-container">
+    <input autocomplete="off" autocapitalize="off"
+           placeholder="搜索..." spellcheck="false"
+           type="search" class="search-input">
+  </div>
+  <span class="popup-btn-close">
+    <i class="fa fa-times-circle"></i>
+  </span>
+</div>
+<div id="search-result">
+  <div id="no-result">
+    <i class="fa fa-spinner fa-pulse fa-5x fa-fw"></i>
+  </div>
+</div>
+
+    </div>
+  </div>
+
+</div>
+    </header>
+
+    
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content post posts-expand">
+            
+
+    
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://shuaiwcm.github.io/yt-dlp%E4%BD%BF%E7%94%A8%E6%96%B9%E6%B3%95.html">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/bxh.png">
+      <meta itemprop="name" content="LuRen">
+      <meta itemprop="description" content="生命在于折腾">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="LuRen' Blog">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          yt-dlp使用方法
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+              
+
+              <time title="创建时间：2025-03-18 00:04:28 / 修改时间：08:07:41" itemprop="dateCreated datePublished" datetime="2025-03-18T00:04:28+08:00">2025-03-18</time>
+            </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/%E6%8A%80%E6%9C%AF%E5%88%86%E4%BA%AB/" itemprop="url" rel="index"><span itemprop="name">技术分享</span></a>
+                </span>
+            </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <h1 id="yt-dlp-使用方法总结-Windows"><a href="#yt-dlp-使用方法总结-Windows" class="headerlink" title="yt-dlp 使用方法总结 (Windows)"></a>yt-dlp 使用方法总结 (Windows)</h1><h2 id="1-准备工作"><a href="#1-准备工作" class="headerlink" title="1. 准备工作"></a>1. 准备工作</h2><ul>
+<li><strong>下载 yt-dlp</strong>：<ul>
+<li>从 <a target="_blank" rel="noopener" href="https://github.com/yt-dlp/yt-dlp/releases/latest">https://github.com/yt-dlp/yt-dlp/releases/latest</a> 下载 <code>yt-dlp.exe</code>。</li>
+<li>存放路径：例如 <code>C:\Users\mr.wang\Desktop\youtobe</code>。</li>
+</ul>
+</li>
+<li><strong>安装 FFmpeg（可选但推荐）</strong>：<ul>
+<li>下载：<a target="_blank" rel="noopener" href="https://www.gyan.dev/ffmpeg/builds/">https://www.gyan.dev/ffmpeg/builds/</a>，选择 <code>ffmpeg-release-essentials.zip</code>。</li>
+<li>解压后将 <code>bin</code> 文件夹中的 <code>ffmpeg.exe</code>、<code>ffprobe.exe</code> 放入 <code>yt-dlp.exe</code> 所在目录。</li>
+</ul>
+</li>
+<li><strong>代理设置</strong>：<ul>
+<li>如果需要代理访问 YouTube，使用 <code>--proxy</code> 参数，例如：<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">--proxy &quot;http://127.0.0.1:10808&quot;</span><br></pre></td></tr></table></figure>
+<span id="more"></span></li>
+</ul>
+</li>
+</ul>
+<h2 id="2-基本操作"><a href="#2-基本操作" class="headerlink" title="2. 基本操作"></a>2. 基本操作</h2><ol>
+<li><strong>打开 CMD</strong>：<ul>
+<li><code>Win + R</code> &gt; 输入 <code>cmd</code> &gt; 回车。</li>
+<li>切换目录：<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">cd C:\Users\mr.wang\Desktop\youtobe</span><br></pre></td></tr></table></figure></li>
+</ul>
+</li>
+<li><strong>检查版本</strong>：<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">yt-dlp --version</span><br></pre></td></tr></table></figure></li>
+</ol>
+<h2 id="3-下载视频"><a href="#3-下载视频" class="headerlink" title="3. 下载视频"></a>3. 下载视频</h2><ul>
+<li><strong>基本下载</strong>：<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">yt-dlp --proxy &quot;http://127.0.0.1:10808&quot; https://www.youtube.com/watch?v=JnOV6XHhZCg</span><br></pre></td></tr></table></figure>
+<ul>
+<li>默认下载最佳质量（可能是 WebM）。</li>
+</ul>
+</li>
+<li><strong>指定格式</strong>：<ol>
+<li>查看可用格式：<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">yt-dlp -F --proxy &quot;http://127.0.0.1:10808&quot; https://www.youtube.com/watch?v=JnOV6XHhZCg</span><br></pre></td></tr></table></figure>
+<ul>
+<li>输出示例：<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">22   mp4   720p</span><br><span class="line">137  webm  1080p (video only)</span><br><span class="line">140  m4a   audio only</span><br></pre></td></tr></table></figure></li>
+</ul>
+</li>
+<li>下载特定格式：<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">yt-dlp -f 22 --proxy &quot;http://127.0.0.1:10808&quot; https://www.youtube.com/watch?v=JnOV6XHhZCg</span><br></pre></td></tr></table></figure>
+<ul>
+<li><code>-f 22</code> 表示 720p MP4。</li>
+</ul>
+</li>
+</ol>
+</li>
+<li><strong>最佳视频+音频（合并为 MP4）</strong>：<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">yt-dlp -f bestvideo+bestaudio --merge-output-format mp4 --proxy &quot;http://127.0.0.1:10808&quot; https://www.youtube.com/watch?v=JnOV6XHhZCg</span><br></pre></td></tr></table></figure>
+<ul>
+<li>需要 FFmpeg。</li>
+</ul>
+</li>
+<li><strong>下载音频</strong>：<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">yt-dlp --extract-audio --audio-format mp3 --proxy &quot;http://127.0.0.1:10808&quot; https://www.youtube.com/watch?v=JnOV6XHhZCg</span><br></pre></td></tr></table></figure>
+<ul>
+<li>输出 MP3，需要 FFmpeg。</li>
+</ul>
+</li>
+</ul>
+<h2 id="4-其他功能"><a href="#4-其他功能" class="headerlink" title="4. 其他功能"></a>4. 其他功能</h2><ul>
+<li><strong>下载播放列表</strong>：<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">yt-dlp --proxy &quot;http://127.0.0.1:10808&quot; &quot;https://www.youtube.com/playlist?list=播放列表ID&quot;</span><br></pre></td></tr></table></figure></li>
+<li><strong>只获取标题（测试用）</strong>：<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">yt-dlp --get-title --proxy &quot;http://127.0.0.1:10808&quot; https://www.youtube.com/watch?v=JnOV6XHhZCg</span><br></pre></td></tr></table></figure></li>
+<li><strong>更新 yt-dlp</strong>：<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">yt-dlp -U</span><br></pre></td></tr></table></figure></li>
+</ul>
+<h2 id="5-文件格式处理"><a href="#5-文件格式处理" class="headerlink" title="5. 文件格式处理"></a>5. 文件格式处理</h2><ul>
+<li><strong>WebM 格式</strong>：<ul>
+<li>默认高分辨率可能是 WebM（VP9 视频 + Opus 音频）。</li>
+<li>播放：用 VLC 或现代浏览器。</li>
+</ul>
+</li>
+<li><strong>转换为 MP4</strong>：<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">ffmpeg -i 输入文件.webm 输出文件.mp4</span><br></pre></td></tr></table></figure>
+<ul>
+<li>示例：<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">ffmpeg -i video.webm video.mp4</span><br></pre></td></tr></table></figure></li>
+</ul>
+</li>
+</ul>
+<h2 id="6-注意事项"><a href="#6-注意事项" class="headerlink" title="6. 注意事项"></a>6. 注意事项</h2><ul>
+<li><strong>代理验证</strong>：<ul>
+<li>测试代理：<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">curl -x http://127.0.0.1:10808 https://www.youtube.com</span><br></pre></td></tr></table></figure></li>
+<li>如果不通，检查代理软件端口（常见为 <code>1080</code> 或 <code>10808</code>）。</li>
+</ul>
+</li>
+<li><strong>错误排查</strong>：<ul>
+<li>加 <code>--verbose</code> 查看详细日志：<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">yt-dlp --proxy &quot;http://127.0.0.1:10808&quot; --verbose https://www.youtube.com/watch?v=JnOV6XHhZCg</span><br></pre></td></tr></table></figure></li>
+</ul>
+</li>
+<li><strong>法律提醒</strong>：<ul>
+<li>仅限个人使用，遵守 YouTube 服务条款和当地法律。</li>
+</ul>
+</li>
+</ul>
+
+    </div>
+
+    
+    
+    
+
+      <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/windows/" rel="tag"># windows</a>
+          </div>
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/MAS%E4%BD%BF%E7%94%A8%E6%96%B9%E6%B3%95.html" rel="prev" title="MAS使用方法">
+      <i class="fa fa-chevron-left"></i> MAS使用方法
+    </a></div>
+      <div class="post-nav-item">
+    <a href="/%E8%A7%A3%E8%84%B1%E7%9A%84%E5%AE%89%E5%AE%81.html" rel="next" title="解脱的安宁">
+      解脱的安宁 <i class="fa fa-chevron-right"></i>
+    </a></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+
+
+          </div>
+          
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#yt-dlp-%E4%BD%BF%E7%94%A8%E6%96%B9%E6%B3%95%E6%80%BB%E7%BB%93-Windows"><span class="nav-number">1.</span> <span class="nav-text">yt-dlp 使用方法总结 (Windows)</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#1-%E5%87%86%E5%A4%87%E5%B7%A5%E4%BD%9C"><span class="nav-number">1.1.</span> <span class="nav-text">1. 准备工作</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#2-%E5%9F%BA%E6%9C%AC%E6%93%8D%E4%BD%9C"><span class="nav-number">1.2.</span> <span class="nav-text">2. 基本操作</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#3-%E4%B8%8B%E8%BD%BD%E8%A7%86%E9%A2%91"><span class="nav-number">1.3.</span> <span class="nav-text">3. 下载视频</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#4-%E5%85%B6%E4%BB%96%E5%8A%9F%E8%83%BD"><span class="nav-number">1.4.</span> <span class="nav-text">4. 其他功能</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#5-%E6%96%87%E4%BB%B6%E6%A0%BC%E5%BC%8F%E5%A4%84%E7%90%86"><span class="nav-number">1.5.</span> <span class="nav-text">5. 文件格式处理</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#6-%E6%B3%A8%E6%84%8F%E4%BA%8B%E9%A1%B9"><span class="nav-number">1.6.</span> <span class="nav-text">6. 注意事项</span></a></li></ol></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="LuRen"
+      src="/images/bxh.png">
+  <p class="site-author-name" itemprop="name">LuRen</p>
+  <div class="site-description" itemprop="description">生命在于折腾</div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">27</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/categories/">
+          
+        <span class="site-state-item-count">2</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+          
+        <span class="site-state-item-count">8</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+
+
+
+      </div>
+        <div class="back-to-top motion-element">
+          <i class="fa fa-arrow-up"></i>
+          <span>0%</span>
+        </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+
+<div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2026</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">LuRen</span>
+</div>
+  <div class="powered-by">由 <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://pisces.theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Pisces</a> 强力驱动
+  </div>
+
+        
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/pisces.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+
+
+
+  
+
+
+
+
+  
+<script src="/js/local-search.js"></script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+</body>
+</html>

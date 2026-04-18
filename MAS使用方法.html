@@ -1,0 +1,493 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 8.1.1">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/bxh_32x32.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/bxh_32x32.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/font-awesome.min.css">
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"shuaiwcm.github.io","root":"/","scheme":"Pisces","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":true,"scrollpercent":true},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},"path":"search.xml"};
+  </script>
+
+  <meta name="description" content="Microsoft Activation Scripts (MAS) 使用方法以下是 MAS 的两种主要使用方式：在线激活和离线激活。根据网络环境和需求选择适合的方法。说明基于截至 2025 年 2 月 19 日的最新版本（MAS 3.0）。 前置条件 管理员权限：需以管理员身份运行命令或脚本。 系统兼容性：支持 Windows 7 及以上，Office 2010 及以上。 网络连接（在线方式）：">
+<meta property="og:type" content="article">
+<meta property="og:title" content="MAS使用方法">
+<meta property="og:url" content="https://shuaiwcm.github.io/MAS%E4%BD%BF%E7%94%A8%E6%96%B9%E6%B3%95.html">
+<meta property="og:site_name" content="LuRen&#39; Blog">
+<meta property="og:description" content="Microsoft Activation Scripts (MAS) 使用方法以下是 MAS 的两种主要使用方式：在线激活和离线激活。根据网络环境和需求选择适合的方法。说明基于截至 2025 年 2 月 19 日的最新版本（MAS 3.0）。 前置条件 管理员权限：需以管理员身份运行命令或脚本。 系统兼容性：支持 Windows 7 及以上，Office 2010 及以上。 网络连接（在线方式）：">
+<meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2025-02-19T22:15:44.000Z">
+<meta property="article:modified_time" content="2025-02-20T06:21:05.014Z">
+<meta property="article:author" content="LuRen">
+<meta property="article:tag" content="windows">
+<meta name="twitter:card" content="summary">
+
+<link rel="canonical" href="https://shuaiwcm.github.io/MAS%E4%BD%BF%E7%94%A8%E6%96%B9%E6%B3%95.html">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'zh-CN'
+  };
+</script>
+
+  <title>MAS使用方法 | LuRen' Blog</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <h1 class="site-title">LuRen' Blog</h1>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+        <i class="fa fa-search fa-fw fa-lg"></i>
+    </div>
+  </div>
+</div>
+
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-fw fa-home"></i>首页</a>
+
+  </li>
+        <li class="menu-item menu-item-tags">
+
+    <a href="/tags/" rel="section"><i class="fa fa-fw fa-tags"></i>标签</a>
+
+  </li>
+        <li class="menu-item menu-item-categories">
+
+    <a href="/categories/" rel="section"><i class="fa fa-fw fa-th"></i>分类</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-fw fa-archive"></i>归档</a>
+
+  </li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>搜索
+        </a>
+      </li>
+  </ul>
+</nav>
+
+
+
+  <div class="search-pop-overlay">
+    <div class="popup search-popup">
+        <div class="search-header">
+  <span class="search-icon">
+    <i class="fa fa-search"></i>
+  </span>
+  <div class="search-input-container">
+    <input autocomplete="off" autocapitalize="off"
+           placeholder="搜索..." spellcheck="false"
+           type="search" class="search-input">
+  </div>
+  <span class="popup-btn-close">
+    <i class="fa fa-times-circle"></i>
+  </span>
+</div>
+<div id="search-result">
+  <div id="no-result">
+    <i class="fa fa-spinner fa-pulse fa-5x fa-fw"></i>
+  </div>
+</div>
+
+    </div>
+  </div>
+
+</div>
+    </header>
+
+    
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content post posts-expand">
+            
+
+    
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://shuaiwcm.github.io/MAS%E4%BD%BF%E7%94%A8%E6%96%B9%E6%B3%95.html">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/bxh.png">
+      <meta itemprop="name" content="LuRen">
+      <meta itemprop="description" content="生命在于折腾">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="LuRen' Blog">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          MAS使用方法
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+              
+
+              <time title="创建时间：2025-02-20 06:15:44 / 修改时间：14:21:05" itemprop="dateCreated datePublished" datetime="2025-02-20T06:15:44+08:00">2025-02-20</time>
+            </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/%E6%8A%80%E6%9C%AF%E5%88%86%E4%BA%AB/" itemprop="url" rel="index"><span itemprop="name">技术分享</span></a>
+                </span>
+            </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <p><strong>Microsoft Activation Scripts (MAS) 使用方法</strong><br>以下是 MAS 的两种主要使用方式：<strong>在线激活</strong>和<strong>离线激活</strong>。根据网络环境和需求选择适合的方法。说明基于截至 2025 年 2 月 19 日的最新版本（MAS 3.0）。</p>
+<h3 id="前置条件"><a href="#前置条件" class="headerlink" title="前置条件"></a>前置条件</h3><ul>
+<li>管理员权限：需以管理员身份运行命令或脚本。</li>
+<li>系统兼容性：支持 Windows 7 及以上，Office 2010 及以上。</li>
+<li>网络连接（在线方式）：需访问 <a target="_blank" rel="noopener" href="https://get.activated.win./">https://get.activated.win。</a></li>
+<li>关闭防病毒软件（可选）：避免误报，建议暂时关闭或添加例外。<span id="more"></span></li>
+</ul>
+<h3 id="方法一：在线激活（推荐，简单快捷）"><a href="#方法一：在线激活（推荐，简单快捷）" class="headerlink" title="方法一：在线激活（推荐，简单快捷）"></a>方法一：在线激活（推荐，简单快捷）</h3><p>在线方式通过 PowerShell 一键下载并运行 MAS 脚本，适合有网络环境的用户。</p>
+<h4 id="打开-PowerShell（管理员模式）"><a href="#打开-PowerShell（管理员模式）" class="headerlink" title="打开 PowerShell（管理员模式）"></a>打开 PowerShell（管理员模式）</h4><ul>
+<li>按 <code>Win + S</code>，输入 <code>PowerShell</code>，右键选择“以管理员身份运行”。</li>
+</ul>
+<h4 id="输入命令并回车"><a href="#输入命令并回车" class="headerlink" title="输入命令并回车"></a>输入命令并回车</h4><p><code>irm https://get.activated.win | iex</code></p>
+<ul>
+<li><code>irm</code>：<code>Invoke-RestMethod</code>，用于下载脚本。</li>
+<li><code>iex</code>：<code>Invoke-Expression</code>，用于执行脚本。</li>
+<li>备用域名：若网络受限，可用<code> irm https://massgrave.dev/get | iex</code>。</li>
+</ul>
+<h4 id="选择激活选项-脚本运行后显示菜单（英文），输入数字选择："><a href="#选择激活选项-脚本运行后显示菜单（英文），输入数字选择：" class="headerlink" title="选择激活选项 脚本运行后显示菜单（英文），输入数字选择："></a>选择激活选项 脚本运行后显示菜单（英文），输入数字选择：</h4><p>[1] HWID：Windows 数字许可证激活（永久，推荐）。<br>[2] KMS38：激活至 2038 年（长期稳定）。<br>[3] Online KMS：180 天激活，支持自动续期。<br>[4] Ohook：Office 永久激活。<br>[5] TSForge：支持 Windows 10 ESU 或特殊版本。<br>[6] 检查激活状态：查看系统激活状态。<br>[0] 退出。</p>
+<h4 id="等待完成"><a href="#等待完成" class="headerlink" title="等待完成"></a>等待完成</h4><ul>
+<li>激活过程几秒到几分钟，成功后显示“Product activated successfully”。</li>
+<li>若失败，屏幕提示错误原因（如网络问题）。</li>
+</ul>
+<h4 id="验证激活"><a href="#验证激活" class="headerlink" title="验证激活"></a>验证激活</h4><ul>
+<li>打开“设置 &gt; 更新和安全 &gt; 激活”，查看是否“已激活”。</li>
+<li>或在菜单选 [6] 检查。</li>
+</ul>
+<h3 id="方法二：离线激活（适合无网络环境）"><a href="#方法二：离线激活（适合无网络环境）" class="headerlink" title="方法二：离线激活（适合无网络环境）"></a>方法二：离线激活（适合无网络环境）</h3><p>离线方式需手动下载 MAS 脚本包，适合网络不稳定或批量操作场景。</p>
+<h4 id="下载-MAS-脚本包"><a href="#下载-MAS-脚本包" class="headerlink" title="下载 MAS 脚本包"></a>下载 MAS 脚本包</h4><ul>
+<li>访问 <a target="_blank" rel="noopener" href="https://github.com/massgravel/Microsoft-Activation-Scripts">GitHub</a>。</li>
+<li>点击“Releases”，下载最新版本（如 <code>MAS_3.0.zip</code>）。</li>
+<li>或访问 <a target="_blank" rel="noopener" href="https://massgrave.dev/">官方站点</a> 获取链接。</li>
+</ul>
+<h4 id="解压文件"><a href="#解压文件" class="headerlink" title="解压文件"></a>解压文件</h4><ul>
+<li>将 .zip 文件解压至任意文件夹（如桌面）。</li>
+</ul>
+<h4 id="运行脚本"><a href="#运行脚本" class="headerlink" title="运行脚本"></a>运行脚本</h4><ul>
+<li>打开解压文件夹，找到 MAS_AIO.cmd。</li>
+<li>右键点击，选择“以管理员身份运行”。</li>
+</ul>
+<h4 id="选择激活选项-界面显示菜单，与在线方式相同："><a href="#选择激活选项-界面显示菜单，与在线方式相同：" class="headerlink" title="选择激活选项 界面显示菜单，与在线方式相同："></a>选择激活选项 界面显示菜单，与在线方式相同：</h4><p>[1] HWID<br>[2] KMS38<br>[3] Online KMS<br>[4] Ohook<br>[5] TSForge<br>[6] 检查激活状态<br>[0] 退出<br>输入数字并回车。</p>
+<h4 id="完成激活"><a href="#完成激活" class="headerlink" title="完成激活"></a>完成激活</h4><ul>
+<li>离线模式下，部分功能（如 Online KMS）需网络，其他（如 HWID、Ohook）可直接运行。</li>
+<li>完成后检查激活状态。</li>
+</ul>
+<h3 id="激活类型选择"><a href="#激活类型选择" class="headerlink" title="激活类型选择"></a>激活类型选择</h3><ul>
+<li>HWID：永久绑定硬件，推荐。</li>
+<li>KMS38：长期无需续期。</li>
+<li>Online KMS：需定期联网，适合双激活。</li>
+<li>Ohook：Office 专用，高效。</li>
+</ul>
+
+    </div>
+
+    
+    
+    
+
+      <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/windows/" rel="tag"># windows</a>
+          </div>
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/linux%E8%AE%BE%E7%BD%AE.html" rel="prev" title="linux设置">
+      <i class="fa fa-chevron-left"></i> linux设置
+    </a></div>
+      <div class="post-nav-item">
+    <a href="/yt-dlp%E4%BD%BF%E7%94%A8%E6%96%B9%E6%B3%95.html" rel="next" title="yt-dlp使用方法">
+      yt-dlp使用方法 <i class="fa fa-chevron-right"></i>
+    </a></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+
+
+          </div>
+          
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%89%8D%E7%BD%AE%E6%9D%A1%E4%BB%B6"><span class="nav-number">1.</span> <span class="nav-text">前置条件</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%96%B9%E6%B3%95%E4%B8%80%EF%BC%9A%E5%9C%A8%E7%BA%BF%E6%BF%80%E6%B4%BB%EF%BC%88%E6%8E%A8%E8%8D%90%EF%BC%8C%E7%AE%80%E5%8D%95%E5%BF%AB%E6%8D%B7%EF%BC%89"><span class="nav-number">2.</span> <span class="nav-text">方法一：在线激活（推荐，简单快捷）</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#%E6%89%93%E5%BC%80-PowerShell%EF%BC%88%E7%AE%A1%E7%90%86%E5%91%98%E6%A8%A1%E5%BC%8F%EF%BC%89"><span class="nav-number">2.1.</span> <span class="nav-text">打开 PowerShell（管理员模式）</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E8%BE%93%E5%85%A5%E5%91%BD%E4%BB%A4%E5%B9%B6%E5%9B%9E%E8%BD%A6"><span class="nav-number">2.2.</span> <span class="nav-text">输入命令并回车</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E9%80%89%E6%8B%A9%E6%BF%80%E6%B4%BB%E9%80%89%E9%A1%B9-%E8%84%9A%E6%9C%AC%E8%BF%90%E8%A1%8C%E5%90%8E%E6%98%BE%E7%A4%BA%E8%8F%9C%E5%8D%95%EF%BC%88%E8%8B%B1%E6%96%87%EF%BC%89%EF%BC%8C%E8%BE%93%E5%85%A5%E6%95%B0%E5%AD%97%E9%80%89%E6%8B%A9%EF%BC%9A"><span class="nav-number">2.3.</span> <span class="nav-text">选择激活选项 脚本运行后显示菜单（英文），输入数字选择：</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E7%AD%89%E5%BE%85%E5%AE%8C%E6%88%90"><span class="nav-number">2.4.</span> <span class="nav-text">等待完成</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E9%AA%8C%E8%AF%81%E6%BF%80%E6%B4%BB"><span class="nav-number">2.5.</span> <span class="nav-text">验证激活</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%96%B9%E6%B3%95%E4%BA%8C%EF%BC%9A%E7%A6%BB%E7%BA%BF%E6%BF%80%E6%B4%BB%EF%BC%88%E9%80%82%E5%90%88%E6%97%A0%E7%BD%91%E7%BB%9C%E7%8E%AF%E5%A2%83%EF%BC%89"><span class="nav-number">3.</span> <span class="nav-text">方法二：离线激活（适合无网络环境）</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#%E4%B8%8B%E8%BD%BD-MAS-%E8%84%9A%E6%9C%AC%E5%8C%85"><span class="nav-number">3.1.</span> <span class="nav-text">下载 MAS 脚本包</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E8%A7%A3%E5%8E%8B%E6%96%87%E4%BB%B6"><span class="nav-number">3.2.</span> <span class="nav-text">解压文件</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E8%BF%90%E8%A1%8C%E8%84%9A%E6%9C%AC"><span class="nav-number">3.3.</span> <span class="nav-text">运行脚本</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E9%80%89%E6%8B%A9%E6%BF%80%E6%B4%BB%E9%80%89%E9%A1%B9-%E7%95%8C%E9%9D%A2%E6%98%BE%E7%A4%BA%E8%8F%9C%E5%8D%95%EF%BC%8C%E4%B8%8E%E5%9C%A8%E7%BA%BF%E6%96%B9%E5%BC%8F%E7%9B%B8%E5%90%8C%EF%BC%9A"><span class="nav-number">3.4.</span> <span class="nav-text">选择激活选项 界面显示菜单，与在线方式相同：</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E5%AE%8C%E6%88%90%E6%BF%80%E6%B4%BB"><span class="nav-number">3.5.</span> <span class="nav-text">完成激活</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%BF%80%E6%B4%BB%E7%B1%BB%E5%9E%8B%E9%80%89%E6%8B%A9"><span class="nav-number">4.</span> <span class="nav-text">激活类型选择</span></a></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="LuRen"
+      src="/images/bxh.png">
+  <p class="site-author-name" itemprop="name">LuRen</p>
+  <div class="site-description" itemprop="description">生命在于折腾</div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">27</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/categories/">
+          
+        <span class="site-state-item-count">2</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+          
+        <span class="site-state-item-count">8</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+
+
+
+      </div>
+        <div class="back-to-top motion-element">
+          <i class="fa fa-arrow-up"></i>
+          <span>0%</span>
+        </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+
+<div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2026</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">LuRen</span>
+</div>
+  <div class="powered-by">由 <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://pisces.theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Pisces</a> 强力驱动
+  </div>
+
+        
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/pisces.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+
+
+
+  
+
+
+
+
+  
+<script src="/js/local-search.js"></script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+</body>
+</html>

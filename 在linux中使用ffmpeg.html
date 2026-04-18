@@ -1,0 +1,566 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 8.1.1">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/bxh_32x32.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/bxh_32x32.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/font-awesome.min.css">
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"shuaiwcm.github.io","root":"/","scheme":"Pisces","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":true,"scrollpercent":true},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},"path":"search.xml"};
+  </script>
+
+  <meta name="description" content="在Ubuntu和其他Linux上安装ffmpeg在终端中使用以下命令完成这些操作： 123sudo add-apt-repository universesudo apt updatesudo apt install ffmpeg 可以使用以下方法验证安装： 1ffmpeg">
+<meta property="og:type" content="article">
+<meta property="og:title" content="在linux中使用ffmpeg">
+<meta property="og:url" content="https://shuaiwcm.github.io/%E5%9C%A8linux%E4%B8%AD%E4%BD%BF%E7%94%A8ffmpeg.html">
+<meta property="og:site_name" content="LuRen&#39; Blog">
+<meta property="og:description" content="在Ubuntu和其他Linux上安装ffmpeg在终端中使用以下命令完成这些操作： 123sudo add-apt-repository universesudo apt updatesudo apt install ffmpeg 可以使用以下方法验证安装： 1ffmpeg">
+<meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2024-12-29T01:25:55.000Z">
+<meta property="article:modified_time" content="2024-12-29T23:58:57.934Z">
+<meta property="article:author" content="LuRen">
+<meta property="article:tag" content="linux">
+<meta name="twitter:card" content="summary">
+
+<link rel="canonical" href="https://shuaiwcm.github.io/%E5%9C%A8linux%E4%B8%AD%E4%BD%BF%E7%94%A8ffmpeg.html">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'zh-CN'
+  };
+</script>
+
+  <title>在linux中使用ffmpeg | LuRen' Blog</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <h1 class="site-title">LuRen' Blog</h1>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+        <i class="fa fa-search fa-fw fa-lg"></i>
+    </div>
+  </div>
+</div>
+
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-fw fa-home"></i>首页</a>
+
+  </li>
+        <li class="menu-item menu-item-tags">
+
+    <a href="/tags/" rel="section"><i class="fa fa-fw fa-tags"></i>标签</a>
+
+  </li>
+        <li class="menu-item menu-item-categories">
+
+    <a href="/categories/" rel="section"><i class="fa fa-fw fa-th"></i>分类</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-fw fa-archive"></i>归档</a>
+
+  </li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>搜索
+        </a>
+      </li>
+  </ul>
+</nav>
+
+
+
+  <div class="search-pop-overlay">
+    <div class="popup search-popup">
+        <div class="search-header">
+  <span class="search-icon">
+    <i class="fa fa-search"></i>
+  </span>
+  <div class="search-input-container">
+    <input autocomplete="off" autocapitalize="off"
+           placeholder="搜索..." spellcheck="false"
+           type="search" class="search-input">
+  </div>
+  <span class="popup-btn-close">
+    <i class="fa fa-times-circle"></i>
+  </span>
+</div>
+<div id="search-result">
+  <div id="no-result">
+    <i class="fa fa-spinner fa-pulse fa-5x fa-fw"></i>
+  </div>
+</div>
+
+    </div>
+  </div>
+
+</div>
+    </header>
+
+    
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content post posts-expand">
+            
+
+    
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://shuaiwcm.github.io/%E5%9C%A8linux%E4%B8%AD%E4%BD%BF%E7%94%A8ffmpeg.html">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/bxh.png">
+      <meta itemprop="name" content="LuRen">
+      <meta itemprop="description" content="生命在于折腾">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="LuRen' Blog">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          在linux中使用ffmpeg
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2024-12-29 09:25:55" itemprop="dateCreated datePublished" datetime="2024-12-29T09:25:55+08:00">2024-12-29</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-calendar-check-o"></i>
+                </span>
+                <span class="post-meta-item-text">更新于</span>
+                <time title="修改时间：2024-12-30 07:58:57" itemprop="dateModified" datetime="2024-12-30T07:58:57+08:00">2024-12-30</time>
+              </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/%E6%8A%80%E6%9C%AF%E5%88%86%E4%BA%AB/" itemprop="url" rel="index"><span itemprop="name">技术分享</span></a>
+                </span>
+            </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <h3 id="在Ubuntu和其他Linux上安装ffmpeg"><a href="#在Ubuntu和其他Linux上安装ffmpeg" class="headerlink" title="在Ubuntu和其他Linux上安装ffmpeg"></a>在Ubuntu和其他Linux上安装ffmpeg</h3><p>在终端中使用以下命令完成这些操作：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">sudo</span> add-apt-repository universe</span><br><span class="line"><span class="built_in">sudo</span> apt update</span><br><span class="line"><span class="built_in">sudo</span> apt install ffmpeg</span><br></pre></td></tr></table></figure>
+<p>可以使用以下方法验证安装：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">ffmpeg</span><br></pre></td></tr></table></figure>
+<span id="more"></span>
+<h3 id="如何使用-ffmpeg"><a href="#如何使用-ffmpeg" class="headerlink" title="如何使用 ffmpeg"></a>如何使用 ffmpeg</h3><h4 id="基础知识"><a href="#基础知识" class="headerlink" title="基础知识"></a>基础知识</h4><h5 id="ffmpeg-命令的基本形式是："><a href="#ffmpeg-命令的基本形式是：" class="headerlink" title="ffmpeg 命令的基本形式是："></a>ffmpeg 命令的基本形式是：</h5><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">ffmpeg [global_options] &#123;[input_file_options] -i input_url&#125; ... &#123;[output_file_options] output_url&#125; ...</span><br></pre></td></tr></table></figure>
+<blockquote>
+<p>1、您必须记住，所有文件选项仅适用于它们后面的文件（您必须为下一个文件再次写入它们）。<br>2、任何前面没有 -i 的文件都被视为输出文件。Ffmpeg 使用您提供的任意数量的输入和输出。您还可以对输入文件和输出文件使用相同的名称，但必须在输出文件名之前添加 -y 标签。<br>3、您不应该混合输入和输出;首先指定 Input Files（输入文件），然后指定 Output Files（输出文件）。</p>
+</blockquote>
+<h5 id="获取媒体文件信息"><a href="#获取媒体文件信息" class="headerlink" title="获取媒体文件信息"></a>获取媒体文件信息</h5><ul>
+<li>ffmpeg 的第一个用途是显示有关媒体文件的信息。这可以通过不输入任何输出文件来完成。只需键入：<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">ffmpeg -i file_name</span><br></pre></td></tr></table></figure>
+<blockquote>
+<p>这适用于音频和视频文件；虽然很有用，但此命令将显示太多与您的文件无关的信息（有关 ffmpeg 的信息）。要省略它，请添加 -hide_banner 标志：</p>
+</blockquote>
+</li>
+</ul>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">ffmpeg -i video_file.mp4 -hide_banner </span><br><span class="line">ffmpeg -i audio_file.mp3 -hide_banner</span><br></pre></td></tr></table></figure>
+
+<h5 id="转换媒体文件"><a href="#转换媒体文件" class="headerlink" title="转换媒体文件"></a>转换媒体文件</h5><ul>
+<li>使用 ffmpeg 在不同媒体格式之间轻松转换。只需指定输入和输出文件，ffmpeg 将从文件扩展名中获得所需的格式。这适用于视频到视频和音频到音频的转换。以下是一些示例：<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">ffmpeg -i video_input.mp4 video_output.avi</span><br><span class="line">ffmpeg -i video_input.webm video_output.flv</span><br><span class="line">ffmpeg -i audio_input.mp3 audio_output.ogg</span><br><span class="line">ffmpeg -i audio_input.wav audio_output.flac</span><br></pre></td></tr></table></figure></li>
+<li>您甚至可以指定输出多个文件：<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">ffmpeg -i audio_input.wav audio_output_1.mp3 audio_output_2.ogg</span><br></pre></td></tr></table></figure></li>
+<li>想要查看受支持的格式，可以使用：<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">ffmpeg -formats</span><br></pre></td></tr></table></figure></li>
+<li>同样也可以添加 -hide_banner 来省略有关应用程序的信息。</li>
+<li>也可以在输出文件前指定 -qscale 0 参数以保持视频文件的质量：<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">ffmpeg -i video_input.wav -qscale 0 video_output.mp4</span><br></pre></td></tr></table></figure></li>
+<li>此外，您可以指定要使用的编解码器，添加<code> -c:a</code>（用于音频）和 <code>-c:v</code>（用于视频），后跟编解码器的名称，或者如果要使用与原始文件相同的编解码器：<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">ffmpeg -i video_input.mp4 -c:v copy -c:a libvorbis video_output.avi</span><br></pre></td></tr></table></figure>
+<blockquote>
+<p>请注意： 这可能会使文件扩展名更具欺骗性，因此请小心。</p>
+</blockquote>
+</li>
+</ul>
+<h5 id="从视频中提取音频"><a href="#从视频中提取音频" class="headerlink" title="从视频中提取音频"></a>从视频中提取音频</h5><ul>
+<li>要从视频文件中提取音频，请执行简单的转换并添加 -vn 标志：<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">ffmpeg -i video.mp4 -vn audio.mp3</span><br></pre></td></tr></table></figure>
+此命令将使用原始文件的比特率。也可以自己使用<code> -ab</code> （音频比特率）设置：</li>
+</ul>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">ffmpeg -i video.mp4 -vn -ab 128k audio.mp3</span><br></pre></td></tr></table></figure>
+<p>一些常见的比特率是 96k、128k、192k、256k、320k（mp3 支持的最高比特率）。<br>其他常见选项包括 -ar （音频频率： 22050， 441000， 48000）， -ac （音频通道数）， -f （音频格式，尽管通常会自动检测）。<code>-ab</code> 也可以替换为 <code>-b:a</code>。例如：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">ffmpeg -i video.mov -vn -ar 44100 -ac 2 -b:a 128k -f mp3 audio.mp3</span><br></pre></td></tr></table></figure>
+
+<h5 id="将视频中的音频去除"><a href="#将视频中的音频去除" class="headerlink" title="将视频中的音频去除"></a>将视频中的音频去除</h5><ul>
+<li>与上一个用法类似，我们可以添加一个简单的标签：<code>-an</code>（而不是 <code>-vn</code>）。<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">ffmpeg -i video_input.mp4 -an -video_output.mp4</span><br></pre></td></tr></table></figure>
+<blockquote>
+<p>-an 标签将使该输出文件的所有音频选项变得无用，因为操作结果中没有音频。</p>
+</blockquote>
+</li>
+</ul>
+<h5 id="从视频中提取图像"><a href="#从视频中提取图像" class="headerlink" title="从视频中提取图像"></a>从视频中提取图像</h5><ul>
+<li>从视频中获取图像，只需要输入：<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">ffmpeg -i video.mp4 -r 1 -f image2 image-%3d.png</span><br></pre></td></tr></table></figure>
+-r 指定帧率（一秒提取多少帧到图像中，默认：25），-f 指定输出格式（image2 实际上代表 image2 序列。最后一个参数 %3d。这只是用 3 位数字（000、001 等）对您的图像进行编号。如果需要，您还可以使用 %2d（2 位格式）甚至 %4d（4 位格式）。</li>
+</ul>
+<h5 id="更改视频分辨率或纵横比"><a href="#更改视频分辨率或纵横比" class="headerlink" title="更改视频分辨率或纵横比"></a>更改视频分辨率或纵横比</h5><ul>
+<li>要调整视频大小，您只需在 -s 标志后指定新的分辨率即可：<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">ffmpeg -i video_input.mov -s 1024x576 video_output.mp4</span><br></pre></td></tr></table></figure></li>
+<li>还可以指定 <code>-c:a</code> 以确保输出文件的音频编解码器是正确的：<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">ffmpeg -i video_input.h264 -s 640x480 -c:a video_output.mov</span><br></pre></td></tr></table></figure></li>
+<li>还可以使用 -aspect 更改纵横比：<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">ffmpeg -i video_input.mp4 -aspect 4:3 video_output.mp4</span><br></pre></td></tr></table></figure></li>
+</ul>
+<h5 id="将海报图像添加到音频"><a href="#将海报图像添加到音频" class="headerlink" title="将海报图像添加到音频"></a>将海报图像添加到音频</h5><ul>
+<li>在音频里添加封面：<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">ffmpeg -loop 1 -i image.jpg -i audio.wav -c:v libx264 -c:a aac  -b:a 192k -shortest output.mp4</span><br></pre></td></tr></table></figure>
+只需更改编解码器（<code>-c:v </code>指定视频编解码器，<code>-c:a</code> 指定音频编解码器）和文件名。</li>
+</ul>
+<h5 id="为视频添加字幕"><a href="#为视频添加字幕" class="headerlink" title="为视频添加字幕"></a>为视频添加字幕</h5><ul>
+<li>用 ffmpeg 添加字幕。输入以下内容：<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">ffmpeg -i video.mp4 -i subtitles.srt -c:v copy -c:a copy -preset veryfast -c:s mov_text -map 0 -map 1 output.mp4</span><br></pre></td></tr></table></figure>
+可以指定所需的任何编解码器（以及与音频&#x2F;视频相关的任何其他附加选项）。</li>
+</ul>
+<h5 id="压缩媒体文件"><a href="#压缩媒体文件" class="headerlink" title="压缩媒体文件"></a>压缩媒体文件</h5><ul>
+<li><p>使用 ffmpeg，有多种方法可以减小文件大小。但过度压缩文件会明显降低结果文件的质量。</p>
+</li>
+<li><p>对于音频文件，只需降低比特率（使用 <code>-b:a</code> 或 <code>-ab</code>）：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">ffmpeg -i audio_input.mp3 -ab 128k audio_output.mp3</span><br><span class="line">ffmpeg -i audio_input.mp3 -b:a 192k audio_output.mp3</span><br></pre></td></tr></table></figure>
+<p>不同的比特率值是：96k、112k、128k、160k、192k、256k、320k。比特率越高，文件大小和质量就越高。</p>
+</li>
+<li><p>对于视频文件，您有更多选择。</p>
+<ul>
+<li>一种方法是降低视频比特率（使用 <code>-b:v</code>）：<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">ffmpeg -i video_input.mp4 -b:v 1000k -bufsize 1000k video_output.mp4</span><br></pre></td></tr></table></figure>
+可以设置 -crf 标志 （Constant Rate Factor）。较低的 crf 意味着较高的比特率。此外，使用 <code>libx264</code> 作为视频编解码器会有所帮助。这是一个非常有效的尺寸减小方法，质量降低非常小：<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">ffmpeg -i video_input.mp4 -c:v libx264 -crf 28 video_output.mp4</span><br></pre></td></tr></table></figure>
+20 到 30 的 crf 很常见，但您可以随意使用特定值。</li>
+<li>在某些情况下，也可以降低帧速率（尽管它很容易使视频感觉迟钝）：<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">ffmpeg -i video_input.mp4 -r 24 video_output.mp4</span><br></pre></td></tr></table></figure>
+-r 指定帧速率（在本例中为 24）。</li>
+<li>还可以压缩音频，使其成为立体声并降低比特率。例如：<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">ffmpeg -i video_input.mp4 -c:v libx264 -ac 2 -c:a aac -strict -2 -b:a 128k -crf 28 video_output.mp4</span><br></pre></td></tr></table></figure>
+-strict -2 和 -ac 2 负责立体声部分。我已经介绍了降低比特率的部分。</li>
+</ul>
+</li>
+</ul>
+<h5 id="剪切媒体文件"><a href="#剪切媒体文件" class="headerlink" title="剪切媒体文件"></a>剪切媒体文件</h5><ul>
+<li>从头开始修剪文件，必须使用 -t 指定持续时间：<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">ffmpeg -i input_video.mp4 -t 5 output_video.mp4 </span><br><span class="line">ffmpeg -i input_audio.wav -t 00:00:05 output_audio.wav</span><br></pre></td></tr></table></figure>
+这适用于视频和音频文件。上面的两个命令都做同样的事情：将输入文件的前 5 秒保存到输出文件中。单个数字（秒数）和 HH：MM：SS（小时、分钟、秒）。第二个版本更像是一个结束时间。还可以更进一步，用 <code>-ss</code> 指定开始时间，甚至用 <code>-to</code> 指定结束时间：<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">ffmpeg -i input_audio.mp3 -ss 00:01:14 output_audio.mp3</span><br><span class="line">ffmpeg -i input_audio.wav -ss 00:00:30 -t 10 output_audio.wav</span><br><span class="line">ffmpeg -i input_video.h264 -ss 00:01:30 -to 00:01:40 output_video.h264</span><br><span class="line">ffmpeg -i input_audio.ogg -ss 5 output_audio.ogg</span><br></pre></td></tr></table></figure>
+开始时间 （-ss HH：MM：SS）、持续时间 （-t 持续时间） （以秒为单位）、结束时间 （-to HH：MM：SS） 和开始时间 （-s 持续时间） （以秒为单位）（在持续时间秒后开始）。</li>
+</ul>
+<h4 id="高级用法"><a href="#高级用法" class="headerlink" title="高级用法"></a>高级用法</h4><h5 id="分割媒体文件"><a href="#分割媒体文件" class="headerlink" title="分割媒体文件"></a>分割媒体文件</h5><ul>
+<li>要将文件拆分为多个部分，必须做的是指定多个修剪（在每个输出文件之前指定开始时间、结束时间或持续时间）。<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">ffmpeg -i video.mp4 -t 00:00:30 video_1.mp4 -ss 00:00:30 video_2.mp4</span><br></pre></td></tr></table></figure>
+语法非常简单。我指定了 -t 00：00：30 作为第一部分的持续时间（第一部分将包含原始视频的前 30 秒）。接下来，我指定我希望其余部分成为第二个视频的一部分（从最后一部分的结尾 00：00：30 开始）。</li>
+</ul>
+<h5 id="连接媒体文件"><a href="#连接媒体文件" class="headerlink" title="连接媒体文件"></a>连接媒体文件</h5><ul>
+<li>创建一个文本谁的<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">touch videos_to_join.txt</span><br><span class="line">vim videos_to_join.txt</span><br></pre></td></tr></table></figure>
+你可以使用任何你想要的工具，touch或vim都可以</li>
+<li>输入你想要加入的所有文件的完整路径（它们将按照你在这里写的顺序加入），每行一个。确保它们具有相同的扩展名（例如 mp4）<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">/home/ubuntu/Desktop/video_1.mp4</span><br><span class="line">/home/ubuntu/Desktop/video_2.mp4</span><br><span class="line">/home/ubuntu/Desktop/video_3.mp4</span><br></pre></td></tr></table></figure>
+保存您刚刚编辑的文件。此方法适用于任何音频或视频文件。</li>
+<li>现在输入以下命令进行合并<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">ffmpeg -f concat -i join.txt output.mp4</span><br></pre></td></tr></table></figure>
+<blockquote>
+<p>我的输出文件output.mp4，那是因为我所有的输入文件都有 mp4 扩展名。<br>这会将您在 join.txt 中写下的所有文件合并到一个输出文件中。</p>
+</blockquote>
+</li>
+</ul>
+<h5 id="将图像合并为视频"><a href="#将图像合并为视频" class="headerlink" title="将图像合并为视频"></a>将图像合并为视频</h5><ul>
+<li>首先是确保你想要放在一起的照片位于同一个目录中。推荐用于图片的扩展名是 .png 和 .jpg。无论您选择哪种方式，请确保所有图像都具有相同的扩展名<br>我们转换的格式 <code>-f</code> 应该是 image2pipe。对于输入，您必须提供连字符 <code>–</code>。image2pipe 允许你做的是将 <code>cat</code> 等命令的结果通过管道<code>|</code>到 ffmpeg 中，而不是一个一个地输入所有名称。这正是我要做的。为此，我们还必须提到我们希望复制视频编解码器 <code>-c:v copy</code> （以正确使用图像）：<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">cat my_photos/* | ffmpeg -f image2pipe -i - -c:v copy video.mkv</span><br></pre></td></tr></table></figure>
+制作的视频，每张照片 1 帧;FFmpeg（默认）以 23 fps 左右的速度运行。<br>要更改此设置，您必须指定所需的帧速率 （-framerate）：<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">cat my_photos/* | ffmpeg -framerate 1 -f image2pipe -i - -c:v copy video.mkv</span><br></pre></td></tr></table></figure>
+这里将帧速率设置为 1，这意味着每个帧（也意味着每个图像）显示 1 秒。<br>要添加音频，例如背景歌曲，可以将音频文件指定为输入文件 <code>-i audo_file</code> 并复制音频编解码器 <code>-c:a copy</code>。对于编解码器，可以使用<code> -c copy</code> 同时复制音频和视频编解码器。确保在指定输出文件之前设置编解码器。还可以设置帧速率，以便所有图片与要使用的音频的持续时间同步。要获得该结果，请将图片数量除以音频的持续时间（以秒为单位）。例如，我有一个 22 秒长的音频文件和 9 张图像。9 &#x2F; 22 大约是 0.40，这就是我将用于帧速率的值：<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">cat my_photos/* | ffmpeg -framerate 0.40 -f image2pipe -i - -i audio.wav -c copy video.mkv</span><br></pre></td></tr></table></figure></li>
+</ul>
+<h5 id="录制你的屏幕"><a href="#录制你的屏幕" class="headerlink" title="录制你的屏幕"></a>录制你的屏幕</h5><ul>
+<li>使用 ffmpeg 进行录屏。需要使用的格式 <code>-f</code> 是 <code>x11grab</code>。这将捕获您的 <code>XSERVER</code>。作为输入，您必须指定屏幕显示编号（主屏幕通常应为 0：0）。但是，这只会捕获屏幕的左上角部分。您应该添加屏幕大小 <code>-s</code>。我的是 1920×1080。屏幕尺寸应在输入之前提及：<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">ffmpeg -f x11grab -s 1920x1080 -i :0.0 output.mp4</span><br></pre></td></tr></table></figure>
+随时按 q 或 Ctrl+C 可停止录屏视频。<br>也可以通过以下方法来录全屏<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">ffmpeg -f x11grab -s $(xdpyinfo | grep dimensions | awk &#x27;&#123;print $2;&#125;&#x27;) -i :0.0 output.mp4</span><br></pre></td></tr></table></figure></li>
+</ul>
+<h5 id="录制摄像头"><a href="#录制摄像头" class="headerlink" title="录制摄像头"></a>录制摄像头</h5><ul>
+<li>录制来自网络摄像头（或其他设备，如 USB 摄像头）的输入更加容易。在 Linux 中，设备以 <code>/dev/video0、/dev/video1</code> 等形式存储在 <code>/dev </code>中：<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">ffmpeg -i /dev/video0 output.mkv</span><br></pre></td></tr></table></figure>
+再次按 q 或 Ctrl+C 停止录制。</li>
+</ul>
+<h5 id="录制你的音频"><a href="#录制你的音频" class="headerlink" title="录制你的音频"></a>录制你的音频</h5><ul>
+<li>Linux 主要通过 <code>ALSA</code> 和 <code>pulseaudio</code> 处理音频。ffmpeg 可以同时录制两者，但我将介绍 <code>pulseaudio</code>，因为基于 Debian 的发行版默认包含它。这两种方法的语法略有不同。<br>对于 <code>pulseaudio</code>，您必须强制 <code>-f  alsa</code> 并指定 <code>default</code> 作为输入 <code>-i default</code>：<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">ffmpeg -f alsa -i default output.mp3</span><br></pre></td></tr></table></figure></li>
+</ul>
+<h4 id="本文内容来自：https-itsfoss-com-ffmpeg-how-to-use-ffmpeg-advanced-usage-，更多的内容可以参考原文，这里仅翻译了其中一部分作为自己日常使用"><a href="#本文内容来自：https-itsfoss-com-ffmpeg-how-to-use-ffmpeg-advanced-usage-，更多的内容可以参考原文，这里仅翻译了其中一部分作为自己日常使用" class="headerlink" title="本文内容来自：https://itsfoss.com/ffmpeg/#how-to-use-ffmpeg-advanced-usage ，更多的内容可以参考原文，这里仅翻译了其中一部分作为自己日常使用"></a>本文内容来自：<a target="_blank" rel="noopener" href="https://itsfoss.com/ffmpeg/#how-to-use-ffmpeg-advanced-usage">https://itsfoss.com/ffmpeg/#how-to-use-ffmpeg-advanced-usage</a> ，更多的内容可以参考原文，这里仅翻译了其中一部分作为自己日常使用</h4>
+    </div>
+
+    
+    
+    
+
+      <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/linux/" rel="tag"># linux</a>
+          </div>
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/openwrt%E5%9B%BA%E4%BB%B6%E7%BC%96%E8%AF%91.html" rel="prev" title="openwrt固件编译">
+      <i class="fa fa-chevron-left"></i> openwrt固件编译
+    </a></div>
+      <div class="post-nav-item">
+    <a href="/openwrt%E8%AE%BE%E7%BD%AE.html" rel="next" title="openwrt设置">
+      openwrt设置 <i class="fa fa-chevron-right"></i>
+    </a></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+
+
+          </div>
+          
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%9C%A8Ubuntu%E5%92%8C%E5%85%B6%E4%BB%96Linux%E4%B8%8A%E5%AE%89%E8%A3%85ffmpeg"><span class="nav-number">1.</span> <span class="nav-text">在Ubuntu和其他Linux上安装ffmpeg</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%A6%82%E4%BD%95%E4%BD%BF%E7%94%A8-ffmpeg"><span class="nav-number">2.</span> <span class="nav-text">如何使用 ffmpeg</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#%E5%9F%BA%E7%A1%80%E7%9F%A5%E8%AF%86"><span class="nav-number">2.1.</span> <span class="nav-text">基础知识</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#ffmpeg-%E5%91%BD%E4%BB%A4%E7%9A%84%E5%9F%BA%E6%9C%AC%E5%BD%A2%E5%BC%8F%E6%98%AF%EF%BC%9A"><span class="nav-number">2.1.1.</span> <span class="nav-text">ffmpeg 命令的基本形式是：</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#%E8%8E%B7%E5%8F%96%E5%AA%92%E4%BD%93%E6%96%87%E4%BB%B6%E4%BF%A1%E6%81%AF"><span class="nav-number">2.1.2.</span> <span class="nav-text">获取媒体文件信息</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#%E8%BD%AC%E6%8D%A2%E5%AA%92%E4%BD%93%E6%96%87%E4%BB%B6"><span class="nav-number">2.1.3.</span> <span class="nav-text">转换媒体文件</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#%E4%BB%8E%E8%A7%86%E9%A2%91%E4%B8%AD%E6%8F%90%E5%8F%96%E9%9F%B3%E9%A2%91"><span class="nav-number">2.1.4.</span> <span class="nav-text">从视频中提取音频</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#%E5%B0%86%E8%A7%86%E9%A2%91%E4%B8%AD%E7%9A%84%E9%9F%B3%E9%A2%91%E5%8E%BB%E9%99%A4"><span class="nav-number">2.1.5.</span> <span class="nav-text">将视频中的音频去除</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#%E4%BB%8E%E8%A7%86%E9%A2%91%E4%B8%AD%E6%8F%90%E5%8F%96%E5%9B%BE%E5%83%8F"><span class="nav-number">2.1.6.</span> <span class="nav-text">从视频中提取图像</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#%E6%9B%B4%E6%94%B9%E8%A7%86%E9%A2%91%E5%88%86%E8%BE%A8%E7%8E%87%E6%88%96%E7%BA%B5%E6%A8%AA%E6%AF%94"><span class="nav-number">2.1.7.</span> <span class="nav-text">更改视频分辨率或纵横比</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#%E5%B0%86%E6%B5%B7%E6%8A%A5%E5%9B%BE%E5%83%8F%E6%B7%BB%E5%8A%A0%E5%88%B0%E9%9F%B3%E9%A2%91"><span class="nav-number">2.1.8.</span> <span class="nav-text">将海报图像添加到音频</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#%E4%B8%BA%E8%A7%86%E9%A2%91%E6%B7%BB%E5%8A%A0%E5%AD%97%E5%B9%95"><span class="nav-number">2.1.9.</span> <span class="nav-text">为视频添加字幕</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#%E5%8E%8B%E7%BC%A9%E5%AA%92%E4%BD%93%E6%96%87%E4%BB%B6"><span class="nav-number">2.1.10.</span> <span class="nav-text">压缩媒体文件</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#%E5%89%AA%E5%88%87%E5%AA%92%E4%BD%93%E6%96%87%E4%BB%B6"><span class="nav-number">2.1.11.</span> <span class="nav-text">剪切媒体文件</span></a></li></ol></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E9%AB%98%E7%BA%A7%E7%94%A8%E6%B3%95"><span class="nav-number">2.2.</span> <span class="nav-text">高级用法</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#%E5%88%86%E5%89%B2%E5%AA%92%E4%BD%93%E6%96%87%E4%BB%B6"><span class="nav-number">2.2.1.</span> <span class="nav-text">分割媒体文件</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#%E8%BF%9E%E6%8E%A5%E5%AA%92%E4%BD%93%E6%96%87%E4%BB%B6"><span class="nav-number">2.2.2.</span> <span class="nav-text">连接媒体文件</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#%E5%B0%86%E5%9B%BE%E5%83%8F%E5%90%88%E5%B9%B6%E4%B8%BA%E8%A7%86%E9%A2%91"><span class="nav-number">2.2.3.</span> <span class="nav-text">将图像合并为视频</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#%E5%BD%95%E5%88%B6%E4%BD%A0%E7%9A%84%E5%B1%8F%E5%B9%95"><span class="nav-number">2.2.4.</span> <span class="nav-text">录制你的屏幕</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#%E5%BD%95%E5%88%B6%E6%91%84%E5%83%8F%E5%A4%B4"><span class="nav-number">2.2.5.</span> <span class="nav-text">录制摄像头</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#%E5%BD%95%E5%88%B6%E4%BD%A0%E7%9A%84%E9%9F%B3%E9%A2%91"><span class="nav-number">2.2.6.</span> <span class="nav-text">录制你的音频</span></a></li></ol></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E6%9C%AC%E6%96%87%E5%86%85%E5%AE%B9%E6%9D%A5%E8%87%AA%EF%BC%9Ahttps-itsfoss-com-ffmpeg-how-to-use-ffmpeg-advanced-usage-%EF%BC%8C%E6%9B%B4%E5%A4%9A%E7%9A%84%E5%86%85%E5%AE%B9%E5%8F%AF%E4%BB%A5%E5%8F%82%E8%80%83%E5%8E%9F%E6%96%87%EF%BC%8C%E8%BF%99%E9%87%8C%E4%BB%85%E7%BF%BB%E8%AF%91%E4%BA%86%E5%85%B6%E4%B8%AD%E4%B8%80%E9%83%A8%E5%88%86%E4%BD%9C%E4%B8%BA%E8%87%AA%E5%B7%B1%E6%97%A5%E5%B8%B8%E4%BD%BF%E7%94%A8"><span class="nav-number">2.3.</span> <span class="nav-text">本文内容来自：https:&#x2F;&#x2F;itsfoss.com&#x2F;ffmpeg&#x2F;#how-to-use-ffmpeg-advanced-usage ，更多的内容可以参考原文，这里仅翻译了其中一部分作为自己日常使用</span></a></li></ol></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="LuRen"
+      src="/images/bxh.png">
+  <p class="site-author-name" itemprop="name">LuRen</p>
+  <div class="site-description" itemprop="description">生命在于折腾</div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">27</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/categories/">
+          
+        <span class="site-state-item-count">2</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+          
+        <span class="site-state-item-count">8</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+
+
+
+      </div>
+        <div class="back-to-top motion-element">
+          <i class="fa fa-arrow-up"></i>
+          <span>0%</span>
+        </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+
+<div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2026</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">LuRen</span>
+</div>
+  <div class="powered-by">由 <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://pisces.theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Pisces</a> 强力驱动
+  </div>
+
+        
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/pisces.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+
+
+
+  
+
+
+
+
+  
+<script src="/js/local-search.js"></script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+</body>
+</html>
