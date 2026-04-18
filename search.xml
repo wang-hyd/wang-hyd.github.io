@@ -22,6 +22,59 @@
       </tags>
   </entry>
   <entry>
+    <title>Linux 高性能 eBPF 代理：dae 安装与全能配置指南</title>
+    <url>/Linux-%E9%AB%98%E6%80%A7%E8%83%BD-eBPF-%E4%BB%A3%E7%90%86%EF%BC%9Adae-%E5%AE%89%E8%A3%85%E4%B8%8E%E5%85%A8%E8%83%BD%E9%85%8D%E7%BD%AE%E6%8C%87%E5%8D%97.html</url>
+    <content><![CDATA[<h3 id="1-为什么选择-dae？"><a href="#1-为什么选择-dae？" class="headerlink" title="1. 为什么选择 dae？"></a>1. 为什么选择 dae？</h3><ul>
+<li><p><code>dae</code> 是基于 Linux 内核 <strong>eBPF</strong> 技术的透明代理解决方案。</p>
+</li>
+<li><p><strong>高性能</strong>：在内核层处理数据包，旁路转发，极低延迟。</p>
+</li>
+<li><p><strong>真·透明</strong>：无需设置系统代理环境变量，接管包括 DNS 在内的所有底层流量。</p>
+</li>
+<li><p><strong>防泄漏</strong>：原生支持 DNS 分流与加密，彻底告别 DNS 污染。</p>
+</li>
+</ul>
+<span id="more"></span>
+<hr>
+<h3 id="2-环境准备与安装"><a href="#2-环境准备与安装" class="headerlink" title="2. 环境准备与安装"></a>2. 环境准备与安装</h3><h4 id="第一步：系统要求"><a href="#第一步：系统要求" class="headerlink" title="第一步：系统要求"></a><strong>第一步：系统要求</strong></h4><p>确保你的 Linux 内核版本 $\ge 5.10$（在终端输入 <code>uname -r</code> 查看）。</p>
+<h4 id="第二步：一键安装"><a href="#第二步：一键安装" class="headerlink" title="第二步：一键安装"></a><strong>第二步：一键安装</strong></h4><p>使用官方脚本，自动安装二进制文件并配置 Systemd 服务：</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">sudo sh -c &quot;$(wget -qO- https://github.com/daeuniverse/dae-installer/raw/main/installer.sh)&quot; @ install</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+<h5 id="手动安装步骤"><a href="#手动安装步骤" class="headerlink" title="手动安装步骤"></a><strong>手动安装步骤</strong></h5><figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">#下载安装包dae-linux-x86_64_v2_sse.zip</span><br><span class="line">wget https://github.com/daeuniverse/dae/releases/download/v1.1.0rc1/dae-linux-x86_64_v2_sse.zip</span><br><span class="line">#解压安装包</span><br><span class="line">unzip dae-linux-x86_64_v2_sse.zip</span><br><span class="line">#放置核心程序</span><br><span class="line">sudo mv dae-linux-x86_64_v2_sse /usr/bin/dae</span><br><span class="line">#赋予执行权限</span><br><span class="line">sudo chmod +x /usr/bin/dae</span><br><span class="line">#放置systemctl服务文件</span><br><span class="line">sudo mv dae.service /etc/systemd/system/</span><br><span class="line">#重载系统服务</span><br><span class="line">sudo systemctl daemon-reload</span><br><span class="line">#放置数据库文件</span><br><span class="line">sudo mkdir -p /usr/share/dae/</span><br><span class="line">sudo mv geoip.dat geosite.dat /usr/share/dae/</span><br></pre></td></tr></table></figure>
+<h4 id="第三步：下载基础数据库"><a href="#第三步：下载基础数据库" class="headerlink" title="第三步：下载基础数据库"></a><strong>第三步：下载基础数据库</strong></h4><p><code>dae</code> 需要 GeoIP 和 GeoSite 数据库来识别国内外流量：</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">sudo mkdir -p /usr/share/dae/</span><br><span class="line">sudo wget -O /usr/share/dae/geoip.dat https://github.com/v2fly/geoip/releases/latest/download/geoip.dat</span><br><span class="line">sudo wget -O /usr/share/dae/geosite.dat https://github.com/v2fly/domain-list-community/releases/latest/download/dlc.dat</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<hr>
+<h3 id="3-核心配置：防泄漏与自动优选"><a href="#3-核心配置：防泄漏与自动优选" class="headerlink" title="3. 核心配置：防泄漏与自动优选"></a>3. 核心配置：防泄漏与自动优选</h3><p>编辑配置文件 <code>sudo nano /etc/dae/config.dae</code>，直接粘贴并修改你的节点信息：</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">global &#123;</span><br><span class="line">    # 绑定网卡：物理机可用 ip link 查看真实名称</span><br><span class="line">    lan_interface: eth0</span><br><span class="line">    wan_interface: eth0</span><br><span class="line">    log_level: info</span><br><span class="line">    dial_mode: domain  # 核心：设置为 domain 模式以强制拦截所有 DNS </span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">dns &#123;</span><br><span class="line">    upstream &#123;</span><br><span class="line">        # 国外加密 DNS：通过代理隧道传输</span><br><span class="line">        googledns: &#x27;tcp+udp://dns.google:53&#x27;</span><br><span class="line">        # 国内直连 DNS：确保国内域名解析速度</span><br><span class="line">        alidns: &#x27;udp://223.5.5.5:53&#x27;</span><br><span class="line">    &#125;</span><br><span class="line">    routing &#123;</span><br><span class="line">        request &#123;</span><br><span class="line">            qname(geosite:cn) -&gt; alidns</span><br><span class="line">            fallback: googledns</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">node &#123;</span><br><span class="line">    # 填入你的节点链接（支持 VLESS, VMess, TUIC, SS 等）</span><br><span class="line">    node_vless: &#x27;vless://...&#x27;</span><br><span class="line">    node_tuic: &#x27;tuic://...&#x27;</span><br><span class="line">    node_vmess: &#x27;vmess://...&#x27;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">group &#123;</span><br><span class="line">    proxy &#123;</span><br><span class="line">        filter: name(node_vless, node_tuic, node_vmess)</span><br><span class="line">        # 自动切换到延迟最低的节点（基于移动平均值）</span><br><span class="line">        policy: min_moving_avg</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">routing &#123;</span><br><span class="line">    # 局域网直连</span><br><span class="line">    dip(geoip:private) -&gt; direct</span><br><span class="line">    # 中国流量直连（节省 VPS 流量）</span><br><span class="line">    dip(geoip:cn) -&gt; direct</span><br><span class="line">    domain(geosite:cn) -&gt; direct</span><br><span class="line">    </span><br><span class="line">    # 其余流量全部走代理（含 DNS 探测包）</span><br><span class="line">    fallback: proxy</span><br><span class="line">&#125;</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+<blockquote>
+<p>需将配置文件权限改为0600<code>sudo chmod 0600 /etc/dae/config.dae</code></p>
+</blockquote>
+<hr>
+<h3 id="4-运行与管理"><a href="#4-运行与管理" class="headerlink" title="4. 运行与管理"></a>4. 运行与管理</h3><p>设置 <code>dae</code> 为<strong>手动模式</strong>，仅在需要时开启：</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line"># 1. 禁用开机自启（实现完全手动）</span><br><span class="line">sudo systemctl disable dae</span><br><span class="line"></span><br><span class="line"># 2. 检查配置语法（发布前必做）</span><br><span class="line">sudo dae validate -c /etc/dae/config.dae</span><br><span class="line"></span><br><span class="line"># 3. 开启代理</span><br><span class="line">sudo systemctl start dae</span><br><span class="line"></span><br><span class="line"># 4. 关闭代理</span><br><span class="line">sudo systemctl stop dae</span><br><span class="line"></span><br><span class="line"># 5. 重载配置</span><br><span class="line">sudo systemctl reload dae</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<hr>
+<h3 id="5-如何验证防泄漏效果？"><a href="#5-如何验证防泄漏效果？" class="headerlink" title="5. 如何验证防泄漏效果？"></a>5. 如何验证防泄漏效果？</h3><p>在 SSH 终端输入以下命令：</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">curl -sL https://test.nextdns.io</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<p><strong>解析结果：</strong></p>
+<ul>
+<li><p>**<code>srcIP</code>**：应显示你代理服务器的出口 IP。</p>
+</li>
+<li><p>**<code>resolver</code>**：应显示 Google 或你在 <code>upstream</code> 中配置的地址。</p>
+</li>
+<li><p>**<code>status</code>**：如果不含任何中国运营商（China Telecom&#x2F;Unicom）的信息，说明 <strong>DNS 防泄漏成功</strong>。</p>
+</li>
+</ul>
+]]></content>
+      <categories>
+        <category>技术分享</category>
+      </categories>
+      <tags>
+        <tag>linux</tag>
+      </tags>
+  </entry>
+  <entry>
     <title>MAS使用方法</title>
     <url>/MAS%E4%BD%BF%E7%94%A8%E6%96%B9%E6%B3%95.html</url>
     <content><![CDATA[<p><strong>Microsoft Activation Scripts (MAS) 使用方法</strong><br>以下是 MAS 的两种主要使用方式：<strong>在线激活</strong>和<strong>离线激活</strong>。根据网络环境和需求选择适合的方法。说明基于截至 2025 年 2 月 19 日的最新版本（MAS 3.0）。</p>
@@ -80,59 +133,6 @@
       </categories>
       <tags>
         <tag>windows</tag>
-      </tags>
-  </entry>
-  <entry>
-    <title>Linux 高性能 eBPF 代理：dae 安装与全能配置指南</title>
-    <url>/Linux-%E9%AB%98%E6%80%A7%E8%83%BD-eBPF-%E4%BB%A3%E7%90%86%EF%BC%9Adae-%E5%AE%89%E8%A3%85%E4%B8%8E%E5%85%A8%E8%83%BD%E9%85%8D%E7%BD%AE%E6%8C%87%E5%8D%97.html</url>
-    <content><![CDATA[<h3 id="1-为什么选择-dae？"><a href="#1-为什么选择-dae？" class="headerlink" title="1. 为什么选择 dae？"></a>1. 为什么选择 dae？</h3><ul>
-<li><p><code>dae</code> 是基于 Linux 内核 <strong>eBPF</strong> 技术的透明代理解决方案。</p>
-</li>
-<li><p><strong>高性能</strong>：在内核层处理数据包，旁路转发，极低延迟。</p>
-</li>
-<li><p><strong>真·透明</strong>：无需设置系统代理环境变量，接管包括 DNS 在内的所有底层流量。</p>
-</li>
-<li><p><strong>防泄漏</strong>：原生支持 DNS 分流与加密，彻底告别 DNS 污染。</p>
-</li>
-</ul>
-<span id="more"></span>
-<hr>
-<h3 id="2-环境准备与安装"><a href="#2-环境准备与安装" class="headerlink" title="2. 环境准备与安装"></a>2. 环境准备与安装</h3><h4 id="第一步：系统要求"><a href="#第一步：系统要求" class="headerlink" title="第一步：系统要求"></a><strong>第一步：系统要求</strong></h4><p>确保你的 Linux 内核版本 $\ge 5.10$（在终端输入 <code>uname -r</code> 查看）。</p>
-<h4 id="第二步：一键安装"><a href="#第二步：一键安装" class="headerlink" title="第二步：一键安装"></a><strong>第二步：一键安装</strong></h4><p>使用官方脚本，自动安装二进制文件并配置 Systemd 服务：</p>
-<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">sudo sh -c &quot;$(wget -qO- https://github.com/daeuniverse/dae-installer/raw/main/installer.sh)&quot; @ install</span><br><span class="line"></span><br></pre></td></tr></table></figure>
-<h5 id="手动安装步骤"><a href="#手动安装步骤" class="headerlink" title="手动安装步骤"></a><strong>手动安装步骤</strong></h5><figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">#下载安装包dae-linux-x86_64_v2_sse.zip</span><br><span class="line">wget https://github.com/daeuniverse/dae/releases/download/v1.1.0rc1/dae-linux-x86_64_v2_sse.zip</span><br><span class="line">#解压安装包</span><br><span class="line">unzip dae-linux-x86_64_v2_sse.zip</span><br><span class="line">#放置核心程序</span><br><span class="line">sudo mv dae-linux-x86_64_v2_sse /usr/bin/dae</span><br><span class="line">#赋予执行权限</span><br><span class="line">sudo chmod +x /usr/bin/dae</span><br><span class="line">#放置systemctl服务文件</span><br><span class="line">sudo mv dae.service /etc/systemd/system/</span><br><span class="line">#重载系统服务</span><br><span class="line">sudo systemctl daemon-reload</span><br><span class="line">#放置数据库文件</span><br><span class="line">sudo mkdir -p /usr/share/dae/</span><br><span class="line">sudo mv geoip.dat geosite.dat /usr/share/dae/</span><br></pre></td></tr></table></figure>
-<h4 id="第三步：下载基础数据库"><a href="#第三步：下载基础数据库" class="headerlink" title="第三步：下载基础数据库"></a><strong>第三步：下载基础数据库</strong></h4><p><code>dae</code> 需要 GeoIP 和 GeoSite 数据库来识别国内外流量：</p>
-<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">sudo mkdir -p /usr/share/dae/</span><br><span class="line">sudo wget -O /usr/share/dae/geoip.dat https://github.com/v2fly/geoip/releases/latest/download/geoip.dat</span><br><span class="line">sudo wget -O /usr/share/dae/geosite.dat https://github.com/v2fly/domain-list-community/releases/latest/download/dlc.dat</span><br><span class="line"></span><br></pre></td></tr></table></figure>
-
-<hr>
-<h3 id="3-核心配置：防泄漏与自动优选"><a href="#3-核心配置：防泄漏与自动优选" class="headerlink" title="3. 核心配置：防泄漏与自动优选"></a>3. 核心配置：防泄漏与自动优选</h3><p>编辑配置文件 <code>sudo nano /etc/dae/config.dae</code>，直接粘贴并修改你的节点信息：</p>
-<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">global &#123;</span><br><span class="line">    # 绑定网卡：物理机可用 ip link 查看真实名称</span><br><span class="line">    lan_interface: eth0</span><br><span class="line">    wan_interface: eth0</span><br><span class="line">    log_level: info</span><br><span class="line">    dial_mode: domain  # 核心：设置为 domain 模式以强制拦截所有 DNS </span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">dns &#123;</span><br><span class="line">    upstream &#123;</span><br><span class="line">        # 国外加密 DNS：通过代理隧道传输</span><br><span class="line">        googledns: &#x27;tcp+udp://dns.google:53&#x27;</span><br><span class="line">        # 国内直连 DNS：确保国内域名解析速度</span><br><span class="line">        alidns: &#x27;udp://223.5.5.5:53&#x27;</span><br><span class="line">    &#125;</span><br><span class="line">    routing &#123;</span><br><span class="line">        request &#123;</span><br><span class="line">            qname(geosite:cn) -&gt; alidns</span><br><span class="line">            fallback: googledns</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">node &#123;</span><br><span class="line">    # 填入你的节点链接（支持 VLESS, VMess, TUIC, SS 等）</span><br><span class="line">    node_vless: &#x27;vless://...&#x27;</span><br><span class="line">    node_tuic: &#x27;tuic://...&#x27;</span><br><span class="line">    node_vmess: &#x27;vmess://...&#x27;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">group &#123;</span><br><span class="line">    proxy &#123;</span><br><span class="line">        filter: name(node_vless, node_tuic, node_vmess)</span><br><span class="line">        # 自动切换到延迟最低的节点（基于移动平均值）</span><br><span class="line">        policy: min_moving_avg</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">routing &#123;</span><br><span class="line">    # 局域网直连</span><br><span class="line">    dip(geoip:private) -&gt; direct</span><br><span class="line">    # 中国流量直连（节省 VPS 流量）</span><br><span class="line">    dip(geoip:cn) -&gt; direct</span><br><span class="line">    domain(geosite:cn) -&gt; direct</span><br><span class="line">    </span><br><span class="line">    # 其余流量全部走代理（含 DNS 探测包）</span><br><span class="line">    fallback: proxy</span><br><span class="line">&#125;</span><br><span class="line"></span><br></pre></td></tr></table></figure>
-<blockquote>
-<p>需将配置文件权限改为0600<code>sudo chmod 0600 /etc/dae/config.dae</code></p>
-</blockquote>
-<hr>
-<h3 id="4-运行与管理"><a href="#4-运行与管理" class="headerlink" title="4. 运行与管理"></a>4. 运行与管理</h3><p>设置 <code>dae</code> 为<strong>手动模式</strong>，仅在需要时开启：</p>
-<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line"># 1. 禁用开机自启（实现完全手动）</span><br><span class="line">sudo systemctl disable dae</span><br><span class="line"></span><br><span class="line"># 2. 检查配置语法（发布前必做）</span><br><span class="line">sudo dae validate -c /etc/dae/config.dae</span><br><span class="line"></span><br><span class="line"># 3. 开启代理</span><br><span class="line">sudo systemctl start dae</span><br><span class="line"></span><br><span class="line"># 4. 关闭代理</span><br><span class="line">sudo systemctl stop dae</span><br><span class="line"></span><br><span class="line"># 5. 重载配置</span><br><span class="line">sudo systemctl reload dae</span><br><span class="line"></span><br></pre></td></tr></table></figure>
-
-<hr>
-<h3 id="5-如何验证防泄漏效果？"><a href="#5-如何验证防泄漏效果？" class="headerlink" title="5. 如何验证防泄漏效果？"></a>5. 如何验证防泄漏效果？</h3><p>在 SSH 终端输入以下命令：</p>
-<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">curl -sL https://test.nextdns.io</span><br><span class="line"></span><br></pre></td></tr></table></figure>
-
-<p><strong>解析结果：</strong></p>
-<ul>
-<li><p>**<code>srcIP</code>**：应显示你代理服务器的出口 IP。</p>
-</li>
-<li><p>**<code>resolver</code>**：应显示 Google 或你在 <code>upstream</code> 中配置的地址。</p>
-</li>
-<li><p>**<code>status</code>**：如果不含任何中国运营商（China Telecom&#x2F;Unicom）的信息，说明 <strong>DNS 防泄漏成功</strong>。</p>
-</li>
-</ul>
-]]></content>
-      <categories>
-        <category>技术分享</category>
-      </categories>
-      <tags>
-        <tag>linux</tag>
       </tags>
   </entry>
   <entry>
