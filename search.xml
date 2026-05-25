@@ -1770,6 +1770,60 @@
       </tags>
   </entry>
   <entry>
+    <title>基于 Docker 纯内网快速部署 ERPNext v16 生产环境</title>
+    <url>/%E5%9F%BA%E4%BA%8E-Docker-%E7%BA%AF%E5%86%85%E7%BD%91%E5%BF%AB%E9%80%9F%E9%83%A8%E7%BD%B2-ERPNext-v16-%E7%94%9F%E4%BA%A7%E7%8E%AF%E5%A2%83.html</url>
+    <content><![CDATA[<p>本指南基于 Frappe 官方 Docker 部署最佳实践（frappe_docker&#x2F;docs&#x2F;02-setup&#x2F;06-setup-examples.md），针对局域网内网服务器&#x2F;旧笔记本（如 ThinkPad E49l）进行了配置优化。去除外网 HTTPS 证书申请和复杂的路由（Traefik），采用轻量级的 Nginx 纯 HTTP 反向代理方案，适合低配置内网服务器本地测试或内部小规模办公使用。</p>
+<h2 id="1-前提条件"><a href="#1-前提条件" class="headerlink" title="1. 前提条件"></a>1. 前提条件</h2><p>在开始前，请确保服务器上已安装以下基础环境：</p>
+<ul>
+<li>操作系统：Ubuntu &#x2F; Debian 或其他支持 Docker 的 Linux 发行版</li>
+<li>核心依赖：Docker Engine 以及 Docker Compose v2（确保 docker compose version 可用）</li>
+</ul>
+<span id="more"></span>
+<h2 id="2-环境准备与克隆仓库"><a href="#2-环境准备与克隆仓库" class="headerlink" title="2. 环境准备与克隆仓库"></a>2. 环境准备与克隆仓库</h2><p>首先克隆 Frappe 官方的 Docker 部署仓库，并创建用于存储最终生成配置的目录（便于后期版本控制和维护）：</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line"># 克隆官方仓库</span><br><span class="line">git clone https://github.com/frappe/frappe_docker.git</span><br><span class="line">cd frappe_docker</span><br><span class="line"></span><br><span class="line"># 创建独立的项目配置文件存储目录</span><br><span class="line">mkdir -p ~/gitops</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<h2 id="3-配置环境变量-env"><a href="#3-配置环境变量-env" class="headerlink" title="3. 配置环境变量 (.env)"></a>3. 配置环境变量 (.env)</h2><p>复制示例环境配置文件：</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">cp example.env .env</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<p>使用编辑器（如 nano .env 或 vim .env）打开 .env，删除或覆盖为以下针对内网优化的内容。</p>
+<blockquote>
+<p>💡 低配机器优化说明：调低了 GUNICORN_THREADS 和 WORKERS，防止多核并发挤爆旧机器的内存。</p>
+</blockquote>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line"># 指定要部署的 ERPNext 版本</span><br><span class="line">ERPNEXT_VERSION=version-16</span><br><span class="line"></span><br><span class="line"># 数据库超级用户 (root) 的密码</span><br><span class="line">DB_PASSWORD=Shuaiwcm0-</span><br><span class="line"></span><br><span class="line"># 保持留空：使用容器内置的 MariaDB 和 Redis</span><br><span class="line">DB_PASSWORD_SECRETS_FILE=</span><br><span class="line">DB_HOST=</span><br><span class="line">DB_PORT=</span><br><span class="line">REDIS_CACHE=</span><br><span class="line">REDIS_QUEUE=</span><br><span class="line"></span><br><span class="line"># 性能微调（适合低配或家用服务器，避免内存溢出）</span><br><span class="line">GUNICORN_THREADS=2</span><br><span class="line">GUNICORN_WORKERS=2</span><br><span class="line">GUNICORN_TIMEOUT=120</span><br><span class="line"></span><br><span class="line"># 纯内网部署，不需要配置 Let&#x27;s Encrypt，此项保持默认即可</span><br><span class="line">LETSENCRYPT_EMAIL=mail@example.com</span><br><span class="line"></span><br><span class="line"># 【核心配置】内网站点名称定义（请求头映射）</span><br><span class="line">FRAPPE_SITE_NAME_HEADER=erp.local</span><br><span class="line"></span><br><span class="line"># Nginx 暴露在宿主机的 HTTP 端口（默认 8080）</span><br><span class="line">HTTP_PUBLISH_PORT=8080</span><br><span class="line">HTTPS_PUBLISH_PORT=</span><br><span class="line"></span><br><span class="line">UPSTREAM_REAL_IP_ADDRESS=127.0.0.1</span><br><span class="line">UPSTREAM_REAL_IP_HEADER=X-Forwarded-For</span><br><span class="line">UPSTREAM_REAL_IP_RECURSIVE=</span><br><span class="line"></span><br><span class="line">PROXY_READ_TIMEOUT=120s</span><br><span class="line">CLIENT_MAX_BODY_SIZE=50m</span><br><span class="line"></span><br><span class="line"># 内网部署不使用 Traefik 或外部反代，以下保持默认即可</span><br><span class="line">SITES_RULE=Host(`erp.example.com`)</span><br><span class="line">NGINX_PROXY_HOSTS=erp.example.com</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<h2 id="4-生成并启动-Docker-Compose-堆栈"><a href="#4-生成并启动-Docker-Compose-堆栈" class="headerlink" title="4. 生成并启动 Docker Compose 堆栈"></a>4. 生成并启动 Docker Compose 堆栈</h2><p>Frappe Docker 的核心逻辑是通过合并不同的 overrides 配置文件来灵活组装服务。我们在这里组合：基础服务 + 内置 MariaDB + 内置 Redis + Nginx HTTP 代理。</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line"># 1. 组合并生成最终的 docker-compose.yml 配置文件</span><br><span class="line">docker compose -f compose.yaml \</span><br><span class="line">  -f overrides/compose.mariadb.yaml \</span><br><span class="line">  -f overrides/compose.redis.yaml \</span><br><span class="line">  -f overrides/compose.proxy.yaml \</span><br><span class="line">  config &gt; ~/gitops/docker-compose.yml</span><br><span class="line"></span><br><span class="line"># 2. 启动 Docker 容器堆栈（项目命名为 erpnext）</span><br><span class="line">docker compose --project-name erpnext -f ~/gitops/docker-compose.yml up -d</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<h2 id="5-初始化-ERPNext-站点"><a href="#5-初始化-ERPNext-站点" class="headerlink" title="5. 初始化 ERPNext 站点"></a>5. 初始化 ERPNext 站点</h2><p>容器启动后，需要对数据库和站点进行初始化。按照以下固定顺序执行：</p>
+<h3 id="步骤一：创建基础站点（需配合-env-中的站点名）"><a href="#步骤一：创建基础站点（需配合-env-中的站点名）" class="headerlink" title="步骤一：创建基础站点（需配合 .env 中的站点名）"></a>步骤一：创建基础站点（需配合 .env 中的站点名）</h3><p>在 backend 容器中创建名为 erp.local 的新站点：</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">docker compose --project-name erpnext exec backend bench new-site erp.local --db-root-password Shuaiwcm0- --admin-password &lt;您的自定义管理员密码&gt;</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<p><em>注：当交互提示 Enter mysql super user [root]: 时，直接敲 回车 即可。</em></p>
+<h3 id="步骤二：安装-ERPNext-应用程序（预计耗时-2-5-分钟）"><a href="#步骤二：安装-ERPNext-应用程序（预计耗时-2-5-分钟）" class="headerlink" title="步骤二：安装 ERPNext 应用程序（预计耗时 2-5 分钟）"></a>步骤二：安装 ERPNext 应用程序（预计耗时 2-5 分钟）</h3><p>将 ERPNext 模块正式安装到刚才创建的 erp.local 站点中：</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">docker compose --project-name erpnext exec backend bench --site erp.local install-app erpnext</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<h3 id="步骤三：关闭维护模式并上线（激活资产与调度服务）"><a href="#步骤三：关闭维护模式并上线（激活资产与调度服务）" class="headerlink" title="步骤三：关闭维护模式并上线（激活资产与调度服务）"></a>步骤三：关闭维护模式并上线（激活资产与调度服务）</h3><p>确保站点从维护状态切换至正常生产状态：</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">docker compose --project-name erpnext exec backend bench --site erp.local set-config maintenance_mode 0</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<h2 id="6-访问与登录"><a href="#6-访问与登录" class="headerlink" title="6. 访问与登录"></a>6. 访问与登录</h2><p>安装完成后，局域网内的任何设备都可以通过浏览器访问：</p>
+<ul>
+<li>访问地址：http:&#x2F;&#x2F;&lt;服务器的内网IP&gt;:8080</li>
+<li>默认管理员账号：Administrator （注意：A 必须大写）</li>
+<li>密码：您在 步骤 5 中自定义的 –admin-password</li>
+</ul>
+<h2 id="7-日常维护备忘"><a href="#7-日常维护备忘" class="headerlink" title="7. 日常维护备忘"></a>7. 日常维护备忘</h2><h3 id="如何停止-启动服务"><a href="#如何停止-启动服务" class="headerlink" title="如何停止&#x2F;启动服务"></a>如何停止&#x2F;启动服务</h3><figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line"># 停止所有相关容器</span><br><span class="line">docker compose --project-name erpnext -f ~/gitops/docker-compose.yml down</span><br><span class="line"></span><br><span class="line"># 重新启动服务</span><br><span class="line">docker compose --project-name erpnext -f ~/gitops/docker-compose.yml up -d</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<h3 id="未来如何平滑升级版本"><a href="#未来如何平滑升级版本" class="headerlink" title="未来如何平滑升级版本"></a>未来如何平滑升级版本</h3><p>当需要更新镜像或升级次版本时，执行以下标准流程：</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line"># 1. 修改 .env 中的 ERPNEXT_VERSION 后，重新生成 yml</span><br><span class="line">docker compose --env-file .env \</span><br><span class="line">  -f compose.yaml \</span><br><span class="line">  -f overrides/compose.mariadb.yaml \</span><br><span class="line">  -f overrides/compose.redis.yaml \</span><br><span class="line">  -f overrides/compose.proxy.yaml \</span><br><span class="line">  config &gt; ~/gitops/docker-compose.yml</span><br><span class="line"></span><br><span class="line"># 2. 拉取新镜像并重启堆栈</span><br><span class="line">docker compose --project-name erpnext -f ~/gitops/docker-compose.yml pull</span><br><span class="line">docker compose --project-name erpnext -f ~/gitops/docker-compose.yml down</span><br><span class="line">docker compose --project-name erpnext -f ~/gitops/docker-compose.yml up -d</span><br><span class="line"></span><br><span class="line"># 3. 必须执行数据库结构迁移</span><br><span class="line">docker compose --project-name erpnext exec backend bench --site erp.local migrate</span><br></pre></td></tr></table></figure>
+]]></content>
+      <categories>
+        <category>技术分享</category>
+      </categories>
+      <tags>
+        <tag>linux erp</tag>
+      </tags>
+  </entry>
+  <entry>
     <title>外网 IPv4 访问家用纯 IPv6 服务（免端口+全 HTTPS 方案）</title>
     <url>/%E5%A4%96%E7%BD%91-IPv4-%E8%AE%BF%E9%97%AE%E5%AE%B6%E7%94%A8%E7%BA%AF-IPv6-%E6%9C%8D%E5%8A%A1%EF%BC%88%E5%85%8D%E7%AB%AF%E5%8F%A3-%E5%85%A8-HTTPS-%E6%96%B9%E6%A1%88%EF%BC%89.html</url>
     <content><![CDATA[<h3 id="1-核心需求与背景"><a href="#1-核心需求与背景" class="headerlink" title="1. 核心需求与背景"></a>1. 核心需求与背景</h3><ul>
@@ -2141,59 +2195,5 @@
 原您在另一个世界里，只有风轻云淡，只有岁月静好。<br> 
 父亲，永别了，也永在了我们心里。<br> 
 ]]></content>
-  </entry>
-  <entry>
-    <title>基于 Docker 纯内网快速部署 ERPNext v16 生产环境</title>
-    <url>/%E5%9F%BA%E4%BA%8E-Docker-%E7%BA%AF%E5%86%85%E7%BD%91%E5%BF%AB%E9%80%9F%E9%83%A8%E7%BD%B2-ERPNext-v16-%E7%94%9F%E4%BA%A7%E7%8E%AF%E5%A2%83.html</url>
-    <content><![CDATA[<p>本指南基于 Frappe 官方 Docker 部署最佳实践（frappe_docker&#x2F;docs&#x2F;02-setup&#x2F;06-setup-examples.md），针对局域网内网服务器&#x2F;旧笔记本（如 ThinkPad E49l）进行了配置优化。去除外网 HTTPS 证书申请和复杂的路由（Traefik），采用轻量级的 Nginx 纯 HTTP 反向代理方案，适合低配置内网服务器本地测试或内部小规模办公使用。</p>
-<h2 id="1-前提条件"><a href="#1-前提条件" class="headerlink" title="1. 前提条件"></a>1. 前提条件</h2><p>在开始前，请确保服务器上已安装以下基础环境：</p>
-<ul>
-<li>操作系统：Ubuntu &#x2F; Debian 或其他支持 Docker 的 Linux 发行版</li>
-<li>核心依赖：Docker Engine 以及 Docker Compose v2（确保 docker compose version 可用）</li>
-</ul>
-<span id="more"></span>
-<h2 id="2-环境准备与克隆仓库"><a href="#2-环境准备与克隆仓库" class="headerlink" title="2. 环境准备与克隆仓库"></a>2. 环境准备与克隆仓库</h2><p>首先克隆 Frappe 官方的 Docker 部署仓库，并创建用于存储最终生成配置的目录（便于后期版本控制和维护）：</p>
-<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line"># 克隆官方仓库</span><br><span class="line">git clone https://github.com/frappe/frappe_docker.git</span><br><span class="line">cd frappe_docker</span><br><span class="line"></span><br><span class="line"># 创建独立的项目配置文件存储目录</span><br><span class="line">mkdir -p ~/gitops</span><br><span class="line"></span><br></pre></td></tr></table></figure>
-
-<h2 id="3-配置环境变量-env"><a href="#3-配置环境变量-env" class="headerlink" title="3. 配置环境变量 (.env)"></a>3. 配置环境变量 (.env)</h2><p>复制示例环境配置文件：</p>
-<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">cp example.env .env</span><br><span class="line"></span><br></pre></td></tr></table></figure>
-
-<p>使用编辑器（如 nano .env 或 vim .env）打开 .env，删除或覆盖为以下针对内网优化的内容。</p>
-<blockquote>
-<p>💡 低配机器优化说明：调低了 GUNICORN_THREADS 和 WORKERS，防止多核并发挤爆旧机器的内存。</p>
-</blockquote>
-<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line"># 指定要部署的 ERPNext 版本</span><br><span class="line">ERPNEXT_VERSION=version-16</span><br><span class="line"></span><br><span class="line"># 数据库超级用户 (root) 的密码</span><br><span class="line">DB_PASSWORD=Shuaiwcm0-</span><br><span class="line"></span><br><span class="line"># 保持留空：使用容器内置的 MariaDB 和 Redis</span><br><span class="line">DB_PASSWORD_SECRETS_FILE=</span><br><span class="line">DB_HOST=</span><br><span class="line">DB_PORT=</span><br><span class="line">REDIS_CACHE=</span><br><span class="line">REDIS_QUEUE=</span><br><span class="line"></span><br><span class="line"># 性能微调（适合低配或家用服务器，避免内存溢出）</span><br><span class="line">GUNICORN_THREADS=2</span><br><span class="line">GUNICORN_WORKERS=2</span><br><span class="line">GUNICORN_TIMEOUT=120</span><br><span class="line"></span><br><span class="line"># 纯内网部署，不需要配置 Let&#x27;s Encrypt，此项保持默认即可</span><br><span class="line">LETSENCRYPT_EMAIL=mail@example.com</span><br><span class="line"></span><br><span class="line"># 【核心配置】内网站点名称定义（请求头映射）</span><br><span class="line">FRAPPE_SITE_NAME_HEADER=erp.local</span><br><span class="line"></span><br><span class="line"># Nginx 暴露在宿主机的 HTTP 端口（默认 8080）</span><br><span class="line">HTTP_PUBLISH_PORT=8080</span><br><span class="line">HTTPS_PUBLISH_PORT=</span><br><span class="line"></span><br><span class="line">UPSTREAM_REAL_IP_ADDRESS=127.0.0.1</span><br><span class="line">UPSTREAM_REAL_IP_HEADER=X-Forwarded-For</span><br><span class="line">UPSTREAM_REAL_IP_RECURSIVE=</span><br><span class="line"></span><br><span class="line">PROXY_READ_TIMEOUT=120s</span><br><span class="line">CLIENT_MAX_BODY_SIZE=50m</span><br><span class="line"></span><br><span class="line"># 内网部署不使用 Traefik 或外部反代，以下保持默认即可</span><br><span class="line">SITES_RULE=Host(`erp.example.com`)</span><br><span class="line">NGINX_PROXY_HOSTS=erp.example.com</span><br><span class="line"></span><br></pre></td></tr></table></figure>
-
-<h2 id="4-生成并启动-Docker-Compose-堆栈"><a href="#4-生成并启动-Docker-Compose-堆栈" class="headerlink" title="4. 生成并启动 Docker Compose 堆栈"></a>4. 生成并启动 Docker Compose 堆栈</h2><p>Frappe Docker 的核心逻辑是通过合并不同的 overrides 配置文件来灵活组装服务。我们在这里组合：基础服务 + 内置 MariaDB + 内置 Redis + Nginx HTTP 代理。</p>
-<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line"># 1. 组合并生成最终的 docker-compose.yml 配置文件</span><br><span class="line">docker compose -f compose.yaml \</span><br><span class="line">  -f overrides/compose.mariadb.yaml \</span><br><span class="line">  -f overrides/compose.redis.yaml \</span><br><span class="line">  -f overrides/compose.proxy.yaml \</span><br><span class="line">  config &gt; ~/gitops/docker-compose.yml</span><br><span class="line"></span><br><span class="line"># 2. 启动 Docker 容器堆栈（项目命名为 erpnext）</span><br><span class="line">docker compose --project-name erpnext -f ~/gitops/docker-compose.yml up -d</span><br><span class="line"></span><br></pre></td></tr></table></figure>
-
-<h2 id="5-初始化-ERPNext-站点"><a href="#5-初始化-ERPNext-站点" class="headerlink" title="5. 初始化 ERPNext 站点"></a>5. 初始化 ERPNext 站点</h2><p>容器启动后，需要对数据库和站点进行初始化。按照以下固定顺序执行：</p>
-<h3 id="步骤一：创建基础站点（需配合-env-中的站点名）"><a href="#步骤一：创建基础站点（需配合-env-中的站点名）" class="headerlink" title="步骤一：创建基础站点（需配合 .env 中的站点名）"></a>步骤一：创建基础站点（需配合 .env 中的站点名）</h3><p>在 backend 容器中创建名为 erp.local 的新站点：</p>
-<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">docker compose --project-name erpnext exec backend bench new-site erp.local --db-root-password Shuaiwcm0- --admin-password &lt;您的自定义管理员密码&gt;</span><br><span class="line"></span><br></pre></td></tr></table></figure>
-
-<p><em>注：当交互提示 Enter mysql super user [root]: 时，直接敲 回车 即可。</em></p>
-<h3 id="步骤二：安装-ERPNext-应用程序（预计耗时-2-5-分钟）"><a href="#步骤二：安装-ERPNext-应用程序（预计耗时-2-5-分钟）" class="headerlink" title="步骤二：安装 ERPNext 应用程序（预计耗时 2-5 分钟）"></a>步骤二：安装 ERPNext 应用程序（预计耗时 2-5 分钟）</h3><p>将 ERPNext 模块正式安装到刚才创建的 erp.local 站点中：</p>
-<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">docker compose --project-name erpnext exec backend bench --site erp.local install-app erpnext</span><br><span class="line"></span><br></pre></td></tr></table></figure>
-
-<h3 id="步骤三：关闭维护模式并上线（激活资产与调度服务）"><a href="#步骤三：关闭维护模式并上线（激活资产与调度服务）" class="headerlink" title="步骤三：关闭维护模式并上线（激活资产与调度服务）"></a>步骤三：关闭维护模式并上线（激活资产与调度服务）</h3><p>确保站点从维护状态切换至正常生产状态：</p>
-<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">docker compose --project-name erpnext exec backend bench --site erp.local set-config maintenance_mode 0</span><br><span class="line"></span><br></pre></td></tr></table></figure>
-
-<h2 id="6-访问与登录"><a href="#6-访问与登录" class="headerlink" title="6. 访问与登录"></a>6. 访问与登录</h2><p>安装完成后，局域网内的任何设备都可以通过浏览器访问：</p>
-<ul>
-<li>访问地址：http:&#x2F;&#x2F;&lt;服务器的内网IP&gt;:8080</li>
-<li>默认管理员账号：Administrator （注意：A 必须大写）</li>
-<li>密码：您在 步骤 5 中自定义的 –admin-password</li>
-</ul>
-<h2 id="7-日常维护备忘"><a href="#7-日常维护备忘" class="headerlink" title="7. 日常维护备忘"></a>7. 日常维护备忘</h2><h3 id="如何停止-启动服务"><a href="#如何停止-启动服务" class="headerlink" title="如何停止&#x2F;启动服务"></a>如何停止&#x2F;启动服务</h3><figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line"># 停止所有相关容器</span><br><span class="line">docker compose --project-name erpnext -f ~/gitops/docker-compose.yml down</span><br><span class="line"></span><br><span class="line"># 重新启动服务</span><br><span class="line">docker compose --project-name erpnext -f ~/gitops/docker-compose.yml up -d</span><br><span class="line"></span><br></pre></td></tr></table></figure>
-
-<h3 id="未来如何平滑升级版本"><a href="#未来如何平滑升级版本" class="headerlink" title="未来如何平滑升级版本"></a>未来如何平滑升级版本</h3><p>当需要更新镜像或升级次版本时，执行以下标准流程：</p>
-<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line"># 1. 修改 .env 中的 ERPNEXT_VERSION 后，重新生成 yml</span><br><span class="line">docker compose --env-file .env \</span><br><span class="line">  -f compose.yaml \</span><br><span class="line">  -f overrides/compose.mariadb.yaml \</span><br><span class="line">  -f overrides/compose.redis.yaml \</span><br><span class="line">  -f overrides/compose.proxy.yaml \</span><br><span class="line">  config &gt; ~/gitops/docker-compose.yml</span><br><span class="line"></span><br><span class="line"># 2. 拉取新镜像并重启堆栈</span><br><span class="line">docker compose --project-name erpnext -f ~/gitops/docker-compose.yml pull</span><br><span class="line">docker compose --project-name erpnext -f ~/gitops/docker-compose.yml down</span><br><span class="line">docker compose --project-name erpnext -f ~/gitops/docker-compose.yml up -d</span><br><span class="line"></span><br><span class="line"># 3. 必须执行数据库结构迁移</span><br><span class="line">docker compose --project-name erpnext exec backend bench --site erp.local migrate</span><br></pre></td></tr></table></figure>
-]]></content>
-      <categories>
-        <category>技术分享</category>
-      </categories>
-      <tags>
-        <tag>linux erp</tag>
-      </tags>
   </entry>
 </search>
